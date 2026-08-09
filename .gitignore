@@ -1,0 +1,15 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Runtime artifacts
+database.db
+backend/model.pkl
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store

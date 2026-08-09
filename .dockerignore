@@ -1,0 +1,7 @@
+﻿__pycache__/
+*.py[cod]
+.git/
+.venv/
+venv/
+database.db
+backend/model.pkl

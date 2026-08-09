@@ -1,0 +1,12 @@
+﻿services:
+  - type: web
+    name: jobfit-placement-analyzer
+    runtime: docker
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_PATH
+        value: /data/database.db
+    disk:
+      name: jobfit-data
+      mountPath: /data
+      sizeGB: 1

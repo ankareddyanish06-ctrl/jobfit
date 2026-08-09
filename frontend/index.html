@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111827">
+    <meta name="description" content="Understand your placement readiness and prioritize skills to learn next.">
+    <title>JobFit | Placement Readiness Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-blobs" aria-hidden="true"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
+    <div class="container">
+        <header class="hero">
+            <a class="brand" href="/" aria-label="JobFit home"><span class="brand-mark">J</span> JobFit</a>
+            <div class="hero-copy">
+                <p class="eyebrow">Career preparation, made concrete</p>
+                <h1>Know where you stand.<br><span class="highlight">Build what comes next.</span></h1>
+                <p class="hero-description">Get a quick placement-readiness estimate and a focused skill-gap plan from your academic and technical profile.</p>
+            </div>
+            <div class="pill-row" aria-label="Application features"><span>ML-powered estimate</span><span>Personal skill map</span><span>Mobile-ready</span></div>
+        </header>
+
+        <main>
+            <section class="glass-panel form-panel" aria-labelledby="form-title">
+                <div class="section-heading"><div><p class="eyebrow">Your profile</p><h2 id="form-title">Start your assessment</h2></div><span class="step">01</span></div>
+                <form id="prediction-form" novalidate>
+                    <div class="input-group">
+                        <label for="cgpa">Cumulative GPA <span>(out of 10)</span></label>
+                        <input type="number" id="cgpa" name="cgpa" min="0" max="10" step="0.01" inputmode="decimal" required placeholder="e.g. 8.5" autocomplete="off">
+                    </div>
+                    <div class="row">
+                        <div class="input-group"><label for="internships">Internships completed</label><input type="number" id="internships" name="internships" min="0" max="20" step="1" inputmode="numeric" required placeholder="e.g. 2"></div>
+                        <div class="input-group"><label for="projects">Technical projects</label><input type="number" id="projects" name="projects" min="0" max="50" step="1" inputmode="numeric" required placeholder="e.g. 4"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="skills">Your skills</label>
+                        <textarea id="skills" name="skills" rows="3" maxlength="500" required placeholder="Python, SQL, React, Git, Docker"></textarea>
+                        <p class="hint">Separate skills with commas. We recognize common aliases such as Node and ML.</p>
+                    </div>
+                    <p class="form-error" id="form-error" role="alert" hidden></p>
+                    <button type="submit" class="btn-primary" id="submit-btn"><span>Analyze my readiness</span><span class="spinner" id="btn-spinner" aria-hidden="true" hidden></span></button>
+                </form>
+            </section>
+
+            <section class="glass-panel results-panel" id="results-panel" hidden aria-labelledby="results-title" tabindex="-1">
+                <div class="section-heading"><div><p class="eyebrow">Your report</p><h2 id="results-title">Readiness snapshot</h2></div><span class="step">02</span></div>
+                <div class="score-cards">
+                    <article class="card"><h3>Placement readiness</h3><div class="progress-circle" id="placement-circle"><span class="value" id="placement-value">0%</span></div><p id="readiness-label" class="card-caption"></p></article>
+                    <article class="card"><h3>Skill coverage</h3><div class="progress-circle purple" id="skill-circle"><span class="value" id="skill-value">0%</span></div><p class="card-caption">Based on in-demand skills</p></article>
+                </div>
+                <div class="analysis-grid">
+                    <article class="recommendations"><h3>Strengths detected</h3><ul id="matched-list" class="chip-list"></ul></article>
+                    <article class="recommendations"><h3>Skills to prioritize</h3><ul id="recommendation-list" class="chip-list"></ul></article>
+                </div>
+                <p class="disclaimer" id="disclaimer"></p>
+                <button class="btn-secondary" id="reset-btn" type="button">Analyze another profile</button>
+            </section>
+        </main>
+
+        <section class="history-section glass-panel" aria-labelledby="history-title">
+            <div class="section-heading"><div><p class="eyebrow">Saved locally</p><h2 id="history-title">Recent assessments</h2></div><button class="text-button" id="refresh-history" type="button">Refresh</button></div>
+            <div class="table-responsive"><table id="history-table"><thead><tr><th scope="col">Date</th><th scope="col">GPA</th><th scope="col">Internships</th><th scope="col">Projects</th><th scope="col">Skill score</th><th scope="col">Readiness</th></tr></thead><tbody></tbody></table></div>
+        </section>
+    </div>
+    <script src="app.js" defer></script>
+</body>
+</html>
