@@ -13,3 +13,5 @@ backend/model.pkl
 .vscode/
 .idea/
 .DS_Store
+
+.env

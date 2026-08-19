@@ -1,79 +1,130 @@
-﻿# JobFit — Placement Readiness Analyzer
+# JobFit — Live Career Intelligence Platform
 
-JobFit is a resume-ready, full-stack Python application that estimates placement readiness and highlights skills to prioritize. The single FastAPI service serves both the responsive browser interface and the REST API.
+JobFit is a full-stack Python career-planning application. It evaluates a student profile against a selected role, identifies skill gaps, creates a learning roadmap, analyzes résumés, and retrieves current job-market signals.
 
-> **Important:** Predictions are educational estimates generated from a synthetic training dataset. The app must not be used to make hiring, admission, or other high-impact decisions.
+## What is live and what requires configuration
+
+| Feature | Status | Source / setup |
+|---|---|---|
+| Job search and job matching | Live now | The Muse Jobs API, refreshed at most once every 10 minutes |
+| Market skills and locations | Live now | Computed from currently retrieved The Muse listings |
+| Salary ranges | Live after setup | Add Adzuna API credentials as environment variables |
+| Company eligibility | Verified-data workflow | An admin registers only official employer requirements and source links |
+| Profile readiness | Explainable guidance | Derived from the user's profile and role requirements; **not** a placement probability |
+| Résumé analysis | Live per upload | PDF/TXT parsed in memory; uploaded file is not stored |
+
+JobFit never presents generated or unverified information as a company rule, job listing, salary fact, or hiring decision.
 
 ## Features
 
-- Responsive, accessible UI that works across phones, tablets, and desktop browsers
-- FastAPI REST API with validated inputs and clear error responses
-- Automatic machine-learning model creation on a first deployment
-- Deterministic skill scoring, matching, and gap recommendations
-- SQLite persistence for the five most recent assessments
-- Health endpoint for hosting platforms: `GET /api/health`
-- Docker configuration and a Render Blueprint for production deployment
-- No frontend framework, third-party JavaScript, or external font/CDN dependency
+- Student profile: education, branch, graduation year, CGPA, backlogs, technical/soft skills, certificates, projects, internships, aptitude, and interview self-assessment
+- Role paths: Data Analyst, Software Developer, ServiceNow Developer, Web Developer, and Cloud Engineer
+- Explainable readiness breakdown, skill match/gaps, and prioritized next action
+- Personalized seven-week learning roadmap and role-specific interview practice
+- PDF/TXT résumé strength and target-role skill analysis
+- Current job search, direct listing links, and profile-to-listing skill match
+- Current market skill/location snapshot
+- Verified employer eligibility registry with official source links and admin-only write access
+- SQLite persistence for recent assessments
+- Responsive mobile UI, Docker container, and Render Blueprint
 
-## Project layout
+## Technology
 
-```text
-backend/
-  main.py          # FastAPI routes and request validation
-  ml_model.py      # Placement predictor and skill analyzer
-  train_model.py   # Synthetic-data ML training script
-  database.py      # SQLite storage
-frontend/
-  index.html       # Accessible responsive page
-  style.css        # Mobile-first visual design
-  app.js           # Browser API integration
-Dockerfile          # Deployment image
-render.yaml         # One-click Render service blueprint
-```
+- Python 3.10+, FastAPI, Pydantic
+- SQLite (use managed PostgreSQL for a public multi-user deployment)
+- pypdf for text-based PDF résumé parsing
+- Vanilla HTML, CSS, and JavaScript
+- The Muse API for live job data
+- Optional Adzuna API for live salary ranges
 
-## Run locally (development only)
+## Run locally in VS Code
 
-Prerequisite: Python 3.10 or newer.
-
-```bash
+```powershell
+cd "D:\python project"
 python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
+.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 uvicorn backend.main:app --reload
 ```
 
-Open `http://127.0.0.1:8000`. The model is generated automatically at first startup. API documentation is available at `http://127.0.0.1:8000/docs`.
+Open `http://127.0.0.1:8000`. API documentation is at `http://127.0.0.1:8000/docs`.
 
-## Deploy it publicly (recommended)
+## Add live-provider credentials
 
-A browser application always needs a server somewhere; this repository is set up so the server is a cloud host, not your computer.
+1. Copy [.env.example](.env.example) to `.env`.
+2. Register your app with [The Muse Developers](https://www.themuse.com/developers/api/v2) and optionally place its key in `MUSE_API_KEY`. The public endpoint works for development; a key raises rate limits.
+3. Create an [Adzuna developer account](https://developer.adzuna.com/overview) and add `ADZUNA_APP_ID` and `ADZUNA_APP_KEY` to enable current salary ranges.
+4. Set `ADMIN_API_KEY` to a long random value. Do not commit `.env`.
 
-### Render using the included blueprint
+Uvicorn does not load `.env` by itself. In PowerShell for local development, set environment variables before starting it:
 
-1. Create a GitHub repository and push this project.
-2. In Render, choose **New → Blueprint** and select the repository.
-3. Render reads `render.yaml`, builds the Docker image, attaches persistent storage, and deploys it.
-4. Use the generated HTTPS `onrender.com` address on your résumé or LinkedIn project section.
-
-The persistent disk matters: without it, free/ephemeral hosts can erase the SQLite history after a restart.
-
-### Any Docker-capable host
-
-```bash
-docker build -t jobfit .
-docker run -p 8000:8000 -e PORT=8000 -v jobfit-data:/data jobfit
+```powershell
+$env:MUSE_API_KEY = "your-key"
+$env:ADZUNA_APP_ID = "your-id"
+$env:ADZUNA_APP_KEY = "your-key"
+$env:ADMIN_API_KEY = "a-long-random-secret"
+uvicorn backend.main:app --reload
 ```
 
-For production, route your domain to port 8000 through the platform's HTTPS proxy. To serve a separately hosted frontend, set `ALLOWED_ORIGINS` to its comma-separated HTTPS origins (for example `https://your-site.example`).
+In Render, add the same values under **Environment** in the service dashboard. Keep all provider keys and `ADMIN_API_KEY` secret.
 
-## API example
+## Register verified employer eligibility
 
-```bash
-curl -X POST https://YOUR-DOMAIN/api/predict \
-  -H "Content-Type: application/json" \
-  -d '{"cgpa":8.4,"internships":2,"projects":4,"skills":["Python","SQL","Git","Docker"]}'
+Only add an employer rule if you have checked its official careers page, campus-placement notice, or another authoritative source. Send it through the authenticated API, for example:
+
+```powershell
+$headers = @{ "X-Admin-Key" = $env:ADMIN_API_KEY; "Content-Type" = "application/json" }
+$body = @{
+  company = "Example Technologies"
+  target_role = "software-developer"
+  min_cgpa = 7.0
+  max_backlogs = 0
+  branches = @("CSE", "IT")
+  skills = @("python", "sql", "git")
+  graduation_year = 2026
+  source_url = "https://careers.example.com/campus"
+} | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/api/company-requirements" -Headers $headers -Body $body
 ```
 
-## Suggested LinkedIn project description
+## Main endpoints
 
-> Built JobFit, a full-stack placement-readiness platform using FastAPI, scikit-learn, SQLite, and responsive vanilla JavaScript. Implemented validated REST APIs, an ML prediction pipeline, deterministic skill-gap recommendations, persistent assessment history, and Docker-based cloud deployment.
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `POST` | `/api/career/analyze` | Create an explainable role-readiness analysis |
+| `GET` | `/api/jobs` | Get current listings from the live provider |
+| `GET` | `/api/market` | Aggregate current listing signals |
+| `POST` | `/api/resume/analyze` | Analyze a PDF/TXT résumé in memory |
+| `POST` | `/api/company-requirements` | Register verified company criteria (admin key required) |
+| `GET` | `/api/company-requirements?role=...` | Read verified criteria for a role |
+| `GET` | `/api/health` | Deployment health check |
+
+## Deploy with GitHub and Render
+
+1. Create a new **empty** GitHub repository, for example `jobfit-live-career-platform`.
+2. In the VS Code terminal inside this project, run:
+
+```powershell
+git init
+git add .
+git commit -m "Build live JobFit career intelligence platform"
+git branch -M main
+git remote add origin https://github.com/YOUR-USERNAME/jobfit-live-career-platform.git
+git push -u origin main
+```
+
+3. In Render select **New → Blueprint**, connect the GitHub repository, and deploy. Render reads `render.yaml` and `Dockerfile`.
+4. In the Render service's **Environment** page, add `MUSE_API_KEY` (optional), `ADZUNA_APP_ID`, `ADZUNA_APP_KEY`, and `ADMIN_API_KEY`.
+5. Every later update uses:
+
+```powershell
+git add .
+git commit -m "Describe your change"
+git push
+```
+
+Render redeploys automatically after a push.
+
+## Production note
+
+Before collecting real student data, add authentication, password hashing, privacy/consent terms, audit logs, rate limiting, and PostgreSQL. Do not train or publish an employment prediction model without a lawful, consented, representative dataset and bias/impact evaluation.

@@ -1,68 +1,53 @@
-﻿<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#111827">
-    <meta name="description" content="Understand your placement readiness and prioritize skills to learn next.">
-    <title>JobFit | Placement Readiness Analyzer</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="JobFit analyzes placement readiness, eligibility, skills, resumes, and career roadmaps.">
+  <title>JobFit | Career Intelligence Platform</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="background-blobs" aria-hidden="true"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
-    <div class="container">
-        <header class="hero">
-            <a class="brand" href="/" aria-label="JobFit home"><span class="brand-mark">J</span> JobFit</a>
-            <div class="hero-copy">
-                <p class="eyebrow">Career preparation, made concrete</p>
-                <h1>Know where you stand.<br><span class="highlight">Build what comes next.</span></h1>
-                <p class="hero-description">Get a quick placement-readiness estimate and a focused skill-gap plan from your academic and technical profile.</p>
-            </div>
-            <div class="pill-row" aria-label="Application features"><span>ML-powered estimate</span><span>Personal skill map</span><span>Mobile-ready</span></div>
-        </header>
+  <header class="topbar"><a class="brand" href="#top"><span>J</span>JobFit</a><nav><a href="#assessment">Assessment</a><a href="#jobs">Jobs</a><a href="#resume">Résumé</a><a href="#market">Market</a></nav></header>
+  <main id="top" class="shell">
+    <section class="hero"><p class="eyebrow">Career intelligence for students</p><h1>Turn your profile into a <em>clear career plan.</em></h1><p>Analyze role readiness, company eligibility, skill gaps, résumé fit, jobs, salary ranges, and interview preparation in one place.</p><div class="hero-tags"><span>Explainable score</span><span>Role-specific plan</span><span>Mobile-ready</span></div></section>
 
-        <main>
-            <section class="glass-panel form-panel" aria-labelledby="form-title">
-                <div class="section-heading"><div><p class="eyebrow">Your profile</p><h2 id="form-title">Start your assessment</h2></div><span class="step">01</span></div>
-                <form id="prediction-form" novalidate>
-                    <div class="input-group">
-                        <label for="cgpa">Cumulative GPA <span>(out of 10)</span></label>
-                        <input type="number" id="cgpa" name="cgpa" min="0" max="10" step="0.01" inputmode="decimal" required placeholder="e.g. 8.5" autocomplete="off">
-                    </div>
-                    <div class="row">
-                        <div class="input-group"><label for="internships">Internships completed</label><input type="number" id="internships" name="internships" min="0" max="20" step="1" inputmode="numeric" required placeholder="e.g. 2"></div>
-                        <div class="input-group"><label for="projects">Technical projects</label><input type="number" id="projects" name="projects" min="0" max="50" step="1" inputmode="numeric" required placeholder="e.g. 4"></div>
-                    </div>
-                    <div class="input-group">
-                        <label for="skills">Your skills</label>
-                        <textarea id="skills" name="skills" rows="3" maxlength="500" required placeholder="Python, SQL, React, Git, Docker"></textarea>
-                        <p class="hint">Separate skills with commas. We recognize common aliases such as Node and ML.</p>
-                    </div>
-                    <p class="form-error" id="form-error" role="alert" hidden></p>
-                    <button type="submit" class="btn-primary" id="submit-btn"><span>Analyze my readiness</span><span class="spinner" id="btn-spinner" aria-hidden="true" hidden></span></button>
-                </form>
-            </section>
+    <section id="assessment" class="panel profile-panel">
+      <div class="heading"><div><p class="eyebrow">01 · Student profile</p><h2>Build your placement profile</h2></div><p class="muted">Fields marked * are required.</p></div>
+      <form id="profile-form" class="profile-form">
+        <div class="form-grid three"><label>Name*<input id="name" required minlength="2" placeholder="Your name"></label><label>Degree*<input id="degree" required placeholder="B.Tech"></label><label>Branch*<input id="branch" required placeholder="CSE"></label></div>
+        <div class="form-grid four"><label>Graduation year*<input id="graduation-year" type="number" min="2020" max="2035" value="2026" required></label><label>CGPA*<input id="cgpa" type="number" min="0" max="10" step="0.01" value="7.5" required></label><label>Backlogs*<input id="backlogs" type="number" min="0" max="20" value="0" required></label><label>Target role*<select id="target-role" required></select></label></div>
+        <div class="form-grid three"><label>Technical skills*<textarea id="technical-skills" required placeholder="Python, SQL, Git, REST API"></textarea><small>Separate with commas.</small></label><label>Soft skills<textarea id="soft-skills" placeholder="Communication, teamwork"></textarea><small>Optional, comma separated.</small></label><label>Certifications<textarea id="certifications" placeholder="AWS Cloud Practitioner"></textarea><small>Optional, comma separated.</small></label></div>
+        <div class="form-grid four"><label>Projects*<input id="projects" type="number" min="0" max="30" value="2" required></label><label>Internships*<input id="internships" type="number" min="0" max="15" value="0" required></label><label>Aptitude score*<input id="aptitude" type="number" min="0" max="100" value="60" required></label><label>Interview score*<input id="interview" type="number" min="0" max="100" value="55" required></label></div>
+        <p id="profile-error" class="message error" hidden role="alert"></p><button id="analyze-button" class="button primary" type="submit">Generate career analysis <span aria-hidden="true">→</span></button>
+      </form>
+    </section>
 
-            <section class="glass-panel results-panel" id="results-panel" hidden aria-labelledby="results-title" tabindex="-1">
-                <div class="section-heading"><div><p class="eyebrow">Your report</p><h2 id="results-title">Readiness snapshot</h2></div><span class="step">02</span></div>
-                <div class="score-cards">
-                    <article class="card"><h3>Placement readiness</h3><div class="progress-circle" id="placement-circle"><span class="value" id="placement-value">0%</span></div><p id="readiness-label" class="card-caption"></p></article>
-                    <article class="card"><h3>Skill coverage</h3><div class="progress-circle purple" id="skill-circle"><span class="value" id="skill-value">0%</span></div><p class="card-caption">Based on in-demand skills</p></article>
-                </div>
-                <div class="analysis-grid">
-                    <article class="recommendations"><h3>Strengths detected</h3><ul id="matched-list" class="chip-list"></ul></article>
-                    <article class="recommendations"><h3>Skills to prioritize</h3><ul id="recommendation-list" class="chip-list"></ul></article>
-                </div>
-                <p class="disclaimer" id="disclaimer"></p>
-                <button class="btn-secondary" id="reset-btn" type="button">Analyze another profile</button>
-            </section>
-        </main>
+    <section id="dashboard" hidden>
+      <div class="dashboard-title"><div><p class="eyebrow">02 · Your dashboard</p><h2 id="dashboard-name">Career dashboard</h2></div><button id="start-over" class="button secondary">Edit profile</button></div>
+      <div class="metric-grid"><article class="metric score"><span>Placement readiness</span><strong id="readiness-score">0%</strong><small id="readiness-label"></small></article><article class="metric"><span>Technical skills</span><strong id="technical-score">0%</strong><small>Role skill coverage</small></article><article class="metric"><span>Aptitude</span><strong id="aptitude-score">0%</strong><small>Profile input</small></article><article class="metric"><span>Interview readiness</span><strong id="interview-score">0%</strong><small>Profile input</small></article></div>
+      <div class="two-column">
+        <article class="panel"><p class="eyebrow">What to do next</p><h3 id="next-action"></h3><ul id="reason-list" class="check-list"></ul></article>
+        <article class="panel"><p class="eyebrow">Salary estimate</p><h3 id="salary-range"></h3><p class="muted" id="salary-note"></p><p class="subtle">A live range appears only after an authorised salary provider is configured.</p></article>
+      </div>
+      <div class="three-column">
+        <article class="panel"><p class="eyebrow">Skill map</p><h3>Role skill gap</h3><div id="skill-table" class="skill-table"></div></article>
+        <article class="panel"><p class="eyebrow">Personalized roadmap</p><h3 id="roadmap-role">Your plan</h3><ol id="roadmap-list" class="roadmap"></ol></article>
+        <article class="panel"><p class="eyebrow">Interview preparation</p><h3>Practice these questions</h3><ol id="interview-list" class="questions"></ol></article>
+      </div>
+      <article class="panel"><div class="heading"><div><p class="eyebrow">Company eligibility</p><h3>Where your profile fits today</h3></div><span class="subtle">Verified employer criteria only</span></div><div id="eligibility-list" class="eligibility-grid"></div></article>
+    </section>
 
-        <section class="history-section glass-panel" aria-labelledby="history-title">
-            <div class="section-heading"><div><p class="eyebrow">Saved locally</p><h2 id="history-title">Recent assessments</h2></div><button class="text-button" id="refresh-history" type="button">Refresh</button></div>
-            <div class="table-responsive"><table id="history-table"><thead><tr><th scope="col">Date</th><th scope="col">GPA</th><th scope="col">Internships</th><th scope="col">Projects</th><th scope="col">Skill score</th><th scope="col">Readiness</th></tr></thead><tbody></tbody></table></div>
-        </section>
-    </div>
-    <script src="app.js" defer></script>
+    <section id="jobs" class="panel"><div class="heading"><div><p class="eyebrow">03 · Job search & matching</p><h2>Find relevant opportunities</h2></div><p class="muted">Live listings powered by The Muse.</p></div><form id="job-filter" class="filter-row"><input id="job-query" placeholder="Search title, company, location"><select id="job-role"><option value="">All roles</option></select><input id="job-location" placeholder="Location e.g. Bengaluru"><button class="button secondary" type="submit">Search jobs</button></form><div id="job-list" class="job-grid"></div></section>
+
+    <section id="resume" class="panel"><div class="heading"><div><p class="eyebrow">04 · Résumé analyzer</p><h2>Check your résumé against the target role</h2></div><p class="muted">PDF/TXT, up to 4 MB. Files are analyzed but not stored.</p></div><form id="resume-form" class="upload-row"><input id="resume-file" type="file" accept=".pdf,.txt" required><button class="button primary" type="submit">Analyze résumé</button></form><p id="resume-error" class="message error" hidden role="alert"></p><div id="resume-results" class="resume-results" hidden><article class="resume-score"><span>Résumé strength</span><strong id="resume-score">0%</strong></article><article><h3>Detected role skills</h3><div id="resume-skills" class="chips"></div></article><article><h3>Improvements</h3><ul id="resume-suggestions" class="check-list"></ul></article></div></section>
+
+    <section id="market" class="panel"><div class="heading"><div><p class="eyebrow">05 · Market snapshot</p><h2>Explore current job-market signals</h2></div><button id="refresh-market" class="button secondary" type="button">Refresh</button></div><div id="market-content" class="market-grid"></div></section>
+
+    <section class="panel"><div class="heading"><div><p class="eyebrow">Saved assessments</p><h2>Recent career profiles</h2></div><button id="refresh-history" class="button secondary" type="button">Refresh</button></div><div class="table-wrap"><table><thead><tr><th>Student</th><th>Target role</th><th>Readiness</th><th>Date</th></tr></thead><tbody id="history-body"></tbody></table></div></section>
+    <p class="disclaimer">Live listings and market signals are provided by The Muse. Employer eligibility appears only after an administrator adds criteria from an official employer source. Readiness is educational guidance, not an automated hiring or admission decision.</p>
+  </main>
+  <script src="app.js" defer></script>
 </body>
 </html>
