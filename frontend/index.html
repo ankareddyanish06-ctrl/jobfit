@@ -1,69 +1,566 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#050505">
-  <meta name="description" content="A live job search and evidence-based career analysis platform for IT careers.">
-  <title>JobFit — Career intelligence</title><link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050608">
+  <meta name="description" content="JobFit — Live IT Career Intelligence Platform. Real-time opportunity signals, open-ended IT role diagnostics, and verified employer criteria.">
+  <title>JobFit — Live IT Career Intelligence Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="space-field" aria-hidden="true"><i class="orb orb-one"></i><i class="orb orb-two"></i><i class="wire-cube"></i><i class="star star-one"></i><i class="star star-two"></i></div>
-<div class="app-shell">
-  <aside class="sidebar">
-    <a class="brand" href="#home"><b>J</b><span>JOBFIT</span></a>
-    <nav aria-label="Main navigation">
-      <a href="#home" data-view="home"><span>◈</span> Overview</a>
-      <a href="#analysis" data-view="analysis"><span>◫</span> Profile analysis</a>
-      <a href="#jobs" data-view="jobs"><span>⌁</span> Live opportunities</a>
-      <a href="#resume" data-view="resume"><span>▣</span> Résumé lab</a>
-      <a href="#developer" data-view="developer"><span>◉</span> Developer</a>
-    </nav>
-    <div class="account"><img id="user-picture" alt="" hidden><div><strong id="user-name">Loading…</strong><small id="user-email"></small></div><button id="logout" aria-label="Sign out">↗</button></div>
-  </aside>
-  <main class="workspace">
-    <header class="mobile-header"><a class="brand" href="#home"><b>J</b><span>JOBFIT</span></a><button id="mobile-menu">Menu</button></header>
+  <!-- Black 3D Space Background Elements -->
+  <div class="space-field" aria-hidden="true">
+    <canvas id="starfield-canvas"></canvas>
+    <i class="orb orb-one"></i>
+    <i class="orb orb-two"></i>
+    <i class="orb orb-three"></i>
+    <i class="wire-cube"></i>
+    <i class="wire-cube wire-cube-two"></i>
+    <i class="star star-one"></i>
+    <i class="star star-two"></i>
+  </div>
 
-    <section class="view active" id="home">
-      <div class="home-grid"><article class="hero-card"><p class="kicker">LIVE CAREER INTELLIGENCE</p><h1>Make the next<br>move <em>visible.</em></h1><p>Search real IT roles, map your skills to current opportunity signals, and create a focused plan instead of guessing.</p><div class="hero-actions"><a class="button primary" href="#analysis">Analyze my profile <span>→</span></a><a class="button ghost" href="#jobs">Search live jobs</a></div><div class="provider-line"><i></i><span id="provider-text">Checking providers…</span></div></article><article class="orbit-card"><div class="orbit"><span class="orbit-core">YOU</span><i></i><i></i><i></i><b>SKILLS</b><b>ROLES</b><b>JOBS</b></div><p>Profile <strong>→</strong> Evidence <strong>→</strong> Opportunity</p></article></div>
-      <div class="feature-strip"><article><span>01</span><h3>Open roles</h3><p>Any IT title, from fresher to senior.</p></article><article><span>02</span><h3>Real sources</h3><p>Provider links and verified eligibility only.</p></article><article><span>03</span><h3>Focused growth</h3><p>Skill gaps and a practical weekly plan.</p></article></div>
-    </section>
+  <div class="app-shell">
+    <!-- Desktop & Tablet Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a class="brand" href="#home">
+          <span class="brand-badge">⚡</span>
+          <span class="brand-name">JOBFIT</span>
+        </a>
+        <div class="status-indicator-pill">
+          <i class="pulse-dot"></i>
+          <span id="sidebar-provider-status">Live Connected</span>
+        </div>
+      </div>
 
-    <section class="view" id="analysis">
-      <div class="view-heading"><p class="kicker">PROFILE ANALYSIS</p><h2>Your evidence,<br><em>not a prediction.</em></h2><p>Choose any IT role. JobFit compares your profile to role frameworks and currently available job evidence.</p></div>
-      <form id="profile-form" class="surface form-surface">
-        <div class="section-label">01 / BACKGROUND</div><div class="form-grid three"><label>Name<input id="name" required minlength="2" placeholder="Your name"></label><label>Degree<input id="degree" required placeholder="B.Tech"></label><label>Branch<input id="branch" required placeholder="CSE"></label></div>
-        <div class="form-grid four"><label>Graduation year<input id="graduation-year" type="number" min="2020" max="2040" value="2026" required></label><label>CGPA<input id="cgpa" type="number" min="0" max="10" step="0.01" value="7.5" required></label><label>Backlogs<input id="backlogs" type="number" min="0" max="20" value="0" required></label><label>Target IT role<input id="target-role" list="role-suggestions" required placeholder="e.g. Platform Engineer"></label><datalist id="role-suggestions"></datalist></div>
-        <div class="section-label">02 / EVIDENCE</div><div class="form-grid three"><label>Technical skills<textarea id="technical-skills" required placeholder="Python, SQL, AWS, Docker"></textarea></label><label>Soft skills<textarea id="soft-skills" placeholder="Communication, problem solving"></textarea></label><label>Certifications<textarea id="certifications" placeholder="AWS Cloud Practitioner"></textarea></label></div>
-        <div class="form-grid four"><label>Projects<input id="projects" type="number" min="0" max="40" value="2" required></label><label>Internships<input id="internships" type="number" min="0" max="20" value="0" required></label><label>Aptitude score<input id="aptitude" type="number" min="0" max="100" value="60" required></label><label>Interview self-score<input id="interview" type="number" min="0" max="100" value="55" required></label></div>
-        <p id="profile-error" class="message" hidden></p><button id="analyze-button" class="button primary" type="submit">Run evidence analysis <span>→</span></button>
-      </form>
-      <section id="analysis-results" hidden>
-        <div class="result-intro"><div><p class="kicker">ANALYSIS COMPLETE</p><h2 id="analysis-title"></h2></div><strong id="readiness-score">0%</strong></div>
-        <p id="source-note" class="source-note"></p><div class="score-row"><article><span>Academic</span><strong id="academic-score"></strong></article><article><span>Technical evidence</span><strong id="technical-score"></strong></article><article><span>Experience</span><strong id="experience-score"></strong></article><article><span>Interview</span><strong id="interview-score"></strong></article></div>
-        <div class="content-grid"><article class="surface"><p class="kicker">NEXT MOVE</p><h3 id="next-action"></h3><ul id="reason-list" class="arrow-list"></ul></article><article class="surface"><p class="kicker">ROLE SKILL MAP</p><h3>What the role needs</h3><div id="skill-list" class="skill-list"></div></article></div>
-        <div class="content-grid"><article class="surface"><p class="kicker">7-WEEK PATH</p><ol id="roadmap-list" class="timeline"></ol></article><article class="surface"><p class="kicker">INTERVIEW PROMPTS</p><ol id="interview-list" class="number-list"></ol></article></div>
-        <article class="surface eligibility-section"><p class="kicker">VERIFIED EMPLOYER CRITERIA</p><h3>Eligibility, where official criteria are available</h3><div id="eligibility-list" class="eligibility-list"></div></article>
+      <nav aria-label="Main Navigation">
+        <a href="#home" data-view="home" class="nav-item active">
+          <span class="nav-icon">◈</span>
+          <span class="nav-label">Overview</span>
+        </a>
+        <a href="#analysis" data-view="analysis" class="nav-item">
+          <span class="nav-icon">◫</span>
+          <span class="nav-label">Profile Analysis</span>
+        </a>
+        <a href="#jobs" data-view="jobs" class="nav-item">
+          <span class="nav-icon">⌁</span>
+          <span class="nav-label">Live Opportunities</span>
+        </a>
+        <a href="#resume" data-view="resume" class="nav-item">
+          <span class="nav-icon">▣</span>
+          <span class="nav-label">Résumé Lab</span>
+        </a>
+        <a href="#developer" data-view="developer" class="nav-item">
+          <span class="nav-icon">◉</span>
+          <span class="nav-label">Developer</span>
+        </a>
+      </nav>
+
+      <div class="account-card">
+        <img id="user-picture" alt="User avatar" hidden>
+        <div class="user-avatar-fallback" id="user-avatar-fallback">U</div>
+        <div class="account-details">
+          <strong id="user-name">Loading user…</strong>
+          <small id="user-email">Session active</small>
+        </div>
+        <button id="logout" class="logout-btn" title="Sign out" aria-label="Sign out">↗</button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Mobile Top Navigation Header -->
+      <header class="mobile-header">
+        <a class="brand" href="#home">
+          <span class="brand-badge">⚡</span>
+          <span class="brand-name">JOBFIT</span>
+        </a>
+        <div class="mobile-right">
+          <span class="live-pulse-badge"><i></i> LIVE</span>
+          <button id="mobile-menu" aria-label="Open Navigation">☰</button>
+        </div>
+      </header>
+
+      <!-- ================= 01 / OVERVIEW VIEW ================= -->
+      <section class="view active" id="home">
+        <div class="home-grid">
+          <article class="hero-card" data-tilt>
+            <div class="hero-header-badge">
+              <span class="kicker">LIVE CAREER INTELLIGENCE</span>
+              <span class="version-badge">v4.0 Live</span>
+            </div>
+            <h1>Make the next move <em>visible.</em></h1>
+            <p class="hero-desc">
+              Search real-time IT roles, benchmark your technical evidence against live market demands, and execute a structured roadmap instead of guessing.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#analysis">
+                <span>Run Profile Analysis</span>
+                <span class="arrow">→</span>
+              </a>
+              <a class="button ghost" href="#jobs">
+                <span>⌁ Search Live Jobs</span>
+              </a>
+              <a class="button subtle" href="#resume">
+                <span>▣ Résumé Lab</span>
+              </a>
+            </div>
+            <div class="provider-line">
+              <i class="live-dot"></i>
+              <span id="provider-text">Connecting to live providers…</span>
+            </div>
+          </article>
+
+          <!-- 3D Holographic Orbit Model -->
+          <article class="orbit-card" data-tilt>
+            <div class="orbit-container">
+              <div class="orbit-center">
+                <span class="orbit-core-text">YOU</span>
+              </div>
+              <div class="orbit-ring ring-1">
+                <span class="orbit-node node-1">SKILLS</span>
+              </div>
+              <div class="orbit-ring ring-2">
+                <span class="orbit-node node-2">ROLES</span>
+              </div>
+              <div class="orbit-ring ring-3">
+                <span class="orbit-node node-3">LIVE JOBS</span>
+              </div>
+            </div>
+            <div class="orbit-caption">
+              <span>Profile Evidence</span>
+              <strong>→</strong>
+              <span>Market Signals</span>
+              <strong>→</strong>
+              <span>Career Growth</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Quick Trending Roles Strip -->
+        <div class="quick-roles-bar">
+          <span class="quick-label">⚡ Explore Trending Roles:</span>
+          <div class="quick-chips" id="quick-role-chips">
+            <button type="button" class="role-pill" data-role="AI / Machine Learning Engineer">AI / ML Engineer</button>
+            <button type="button" class="role-pill" data-role="Software Developer">Software Developer</button>
+            <button type="button" class="role-pill" data-role="Full Stack Developer">Full Stack</button>
+            <button type="button" class="role-pill" data-role="Cloud Engineer">Cloud Engineer</button>
+            <button type="button" class="role-pill" data-role="DevOps Engineer">DevOps</button>
+            <button type="button" class="role-pill" data-role="Data Analyst">Data Analyst</button>
+            <button type="button" class="role-pill" data-role="Cybersecurity Analyst">Cybersecurity</button>
+          </div>
+        </div>
+
+        <!-- 3 Feature Pillars -->
+        <div class="feature-strip">
+          <article class="feature-card">
+            <span class="feat-num">01</span>
+            <h3>Open-Ended IT Roles</h3>
+            <p>From fresher graduate roles to senior architects, analyze any IT specialism across the industry.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feat-num">02</span>
+            <h3>Multi-Provider Real Jobs</h3>
+            <p>Adzuna-first real-time search with The Muse fallback. Direct links and verified criteria only.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feat-num">03</span>
+            <h3>Actionable 7-Week Sprint</h3>
+            <p>Targeted skill-gap remediation, customized interview questions, and tailored portfolio projects.</p>
+          </article>
+        </div>
       </section>
-    </section>
 
-    <section class="view" id="jobs">
-      <div class="view-heading"><p class="kicker">LIVE IT OPPORTUNITIES</p><h2>Search beyond<br><em>one career path.</em></h2><p>Enter any IT job title. Search listings from fresher and graduate roles through senior, lead, and architect positions.</p></div>
-      <form id="job-form" class="surface search-surface"><input id="job-query" required value="Software Developer" placeholder="Role e.g. Data Engineer"><input id="job-location" placeholder="Location e.g. Bengaluru"><select id="job-country"><option value="in">India</option><option value="us">United States</option><option value="gb">United Kingdom</option><option value="au">Australia</option><option value="ca">Canada</option></select><select id="job-level"><option value="">All levels</option><option>Fresher / Entry</option><option>Mid-level</option><option>Senior+</option></select><button class="button primary">Search live roles</button></form>
-      <div class="jobs-toolbar"><p id="jobs-meta">Search a role to load current opportunities.</p><button id="load-more" class="button ghost" hidden>Load more</button></div><div id="job-list" class="job-list"></div>
-    </section>
+      <!-- ================= 02 / PROFILE ANALYSIS VIEW ================= -->
+      <section class="view" id="analysis">
+        <div class="view-heading">
+          <span class="kicker">PROFILE ANALYSIS & DIAGNOSTICS</span>
+          <h2>Your evidence,<br><em>not a fake prediction.</em></h2>
+          <p>Choose any IT role. JobFit evaluates your technical profile against role competencies, verified company standards, and live opportunity listings.</p>
+        </div>
 
-    <section class="view" id="resume">
-      <div class="view-heading"><p class="kicker">RÉSUMÉ LAB</p><h2>Make your résumé<br><em>prove the skills.</em></h2><p>Upload a text-based PDF or TXT résumé. It is analyzed in memory and never stored by JobFit.</p></div>
-      <form id="resume-form" class="surface resume-upload"><label class="dropzone"><input id="resume-file" type="file" accept=".pdf,.txt" required><span>◇</span><strong>Drop a PDF/TXT résumé here</strong><small>Maximum size: 4 MB</small></label><label>Target IT role<input id="resume-role" list="role-suggestions" required placeholder="e.g. Cloud Engineer"></label><button class="button primary" type="submit">Analyze résumé <span>→</span></button></form>
-      <p id="resume-error" class="message" hidden></p><section id="resume-results" class="resume-results" hidden><article class="resume-score"><p>RÉSUMÉ STRENGTH</p><strong id="resume-score">0%</strong><small id="resume-source"></small></article><article class="surface"><p class="kicker">DETECTED EVIDENCE</p><div id="resume-skills" class="chips"></div></article><article class="surface"><p class="kicker">IMPROVE NEXT</p><ul id="resume-suggestions" class="arrow-list"></ul></article></section>
-    </section>
+        <form id="profile-form" class="surface form-surface">
+          <div class="form-header-bar">
+            <span class="section-label">01 / CANDIDATE BACKGROUND & TARGET</span>
+            <button type="button" id="autofill-profile" class="button outline small">⚡ Fill Sample Profile</button>
+          </div>
 
-    <section class="view" id="developer">
-      <div class="view-heading"><p class="kicker">ABOUT THE DEVELOPER</p><h2>A platform built to turn<br><em>career uncertainty into action.</em></h2></div>
-      <div class="developer-grid"><article class="developer-profile surface"><div class="developer-mark">&lt;/&gt;</div><p class="kicker">PROJECT CREATOR</p><h3>Your Name</h3><p>Full-stack developer focused on practical technology that helps students understand their job readiness and discover opportunities.</p><a href="https://github.com/" target="_blank" rel="noreferrer" class="button ghost">Add your GitHub →</a></article><article class="surface"><p class="kicker">ARCHITECTURE</p><ul class="stack-list"><li><b>FastAPI</b><span>Authenticated Python API</span></li><li><b>Adzuna + The Muse</b><span>Live job-provider strategy</span></li><li><b>Google OAuth</b><span>Secure user session</span></li><li><b>SQLite / PostgreSQL-ready</b><span>Assessment and verified-rule persistence</span></li><li><b>Vanilla UI</b><span>Responsive black 3D-inspired interface</span></li></ul></article></div>
-      <article class="surface project-note"><p class="kicker">DATA INTEGRITY</p><p>JobFit labels each source, links to live listings, uses only admin-verified employer criteria, and does not make automated hiring decisions. Configure Google OAuth, Adzuna, and production data governance before collecting real user information.</p></article>
-    </section>
-  </main>
-</div>
-<script src="app.js" defer></script>
+          <div class="form-grid three">
+            <label>Full Name
+              <input id="name" required minlength="2" placeholder="e.g. Anish Reddy" value="Anish Reddy">
+            </label>
+            <label>Degree
+              <input id="degree" required placeholder="e.g. B.Tech / B.E. / MCA" value="B.Tech">
+            </label>
+            <label>Branch / Major
+              <input id="branch" required placeholder="e.g. CSE / IT / ECE" value="CSE">
+            </label>
+          </div>
+
+          <div class="form-grid four">
+            <label>Graduation Year
+              <input id="graduation-year" type="number" min="2020" max="2040" value="2026" required>
+            </label>
+            <label>CGPA (Scale of 10)
+              <input id="cgpa" type="number" min="0" max="10" step="0.01" value="8.4" required>
+            </label>
+            <label>Active Backlogs
+              <input id="backlogs" type="number" min="0" max="20" value="0" required>
+            </label>
+            <label>Target IT Role
+              <input id="target-role" list="role-suggestions" required placeholder="e.g. Full Stack Developer" value="Full Stack Developer">
+              <datalist id="role-suggestions"></datalist>
+            </label>
+          </div>
+
+          <div class="section-label">02 / TECHNICAL EVIDENCE & SKILLS</div>
+          <div class="form-grid three">
+            <label>Technical Skills (Comma separated)
+              <textarea id="technical-skills" required placeholder="Python, JavaScript, React, SQL, Git, REST API, Docker">Python, JavaScript, React, SQL, Git, REST API, Docker</textarea>
+              <small class="field-hint">Tip: Include languages, frameworks, cloud, and tools</small>
+            </label>
+            <label>Soft Skills & Attributes
+              <textarea id="soft-skills" placeholder="Problem Solving, Teamwork, Communication, Agile">Problem Solving, Agile Collaboration, Technical Writing</textarea>
+            </label>
+            <label>Certifications (Optional)
+              <textarea id="certifications" placeholder="AWS Certified Cloud Practitioner, Oracle Java Associate">AWS Certified Cloud Practitioner</textarea>
+            </label>
+          </div>
+
+          <div class="section-label">03 / PRACTICAL EXPERIENCE & READINESS ASSESSMENTS</div>
+          <div class="form-grid four">
+            <label>Completed Projects
+              <input id="projects" type="number" min="0" max="40" value="3" required>
+            </label>
+            <label>Internships Completed
+              <input id="internships" type="number" min="0" max="20" value="1" required>
+            </label>
+            <label>Aptitude Assessment (0–100)
+              <input id="aptitude" type="number" min="0" max="100" value="75" required>
+            </label>
+            <label>Interview Confidence (0–100)
+              <input id="interview" type="number" min="0" max="100" value="70" required>
+            </label>
+          </div>
+
+          <p id="profile-error" class="message" hidden></p>
+          <div class="form-footer">
+            <button id="analyze-button" class="button primary large" type="submit">
+              <span>Run Evidence Analysis</span>
+              <span class="arrow">→</span>
+            </button>
+            <span class="disclaimer-text">🔒 Processed securely. No data shared without consent.</span>
+          </div>
+        </form>
+
+        <!-- Dynamic Analysis Results Container -->
+        <section id="analysis-results" class="analysis-results-section" hidden>
+          <div class="result-banner surface">
+            <div class="result-left">
+              <span class="kicker">ASSESSMENT DIAGNOSTIC</span>
+              <h2 id="analysis-title">Role Readiness</h2>
+              <p id="readiness-label" class="readiness-tag">Application Ready</p>
+              <p id="source-note" class="source-note"></p>
+            </div>
+            <div class="result-right">
+              <div class="score-circle-wrap">
+                <svg class="score-circle-svg" viewBox="0 0 120 120">
+                  <circle class="score-bg-ring" cx="60" cy="60" r="50" />
+                  <circle class="score-progress-ring" id="readiness-ring" cx="60" cy="60" r="50" />
+                </svg>
+                <div class="score-text-overlay">
+                  <strong id="readiness-score">0%</strong>
+                  <span>READINESS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Score Breakdown Grid -->
+          <div class="score-row">
+            <article class="metric-card">
+              <span class="metric-label">Academic Index</span>
+              <strong id="academic-score" class="metric-val">0%</strong>
+              <div class="metric-bar"><i id="academic-bar" style="width: 0%"></i></div>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Technical Competence</span>
+              <strong id="technical-score" class="metric-val">0%</strong>
+              <div class="metric-bar"><i id="technical-bar" style="width: 0%"></i></div>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Practical Experience</span>
+              <strong id="experience-score" class="metric-val">0%</strong>
+              <div class="metric-bar"><i id="experience-bar" style="width: 0%"></i></div>
+            </article>
+            <article class="metric-card">
+              <span class="metric-label">Interview & Aptitude</span>
+              <strong id="interview-score" class="metric-val">0%</strong>
+              <div class="metric-bar"><i id="interview-bar" style="width: 0%"></i></div>
+            </article>
+          </div>
+
+          <!-- Strategic Advice & Skill Matrix Grid -->
+          <div class="content-grid">
+            <article class="surface">
+              <span class="kicker">STRATEGIC NEXT MOVE</span>
+              <h3 id="next-action" class="highlight-title">Focus Action</h3>
+              <ul id="reason-list" class="arrow-list"></ul>
+            </article>
+            <article class="surface">
+              <span class="kicker">SKILL DIAGNOSTIC MATRIX</span>
+              <h3>Required vs Matched Competencies</h3>
+              <div id="skill-list" class="skill-matrix-chips"></div>
+            </article>
+          </div>
+
+          <!-- 7-Week Sprint Roadmap & Interview Prompts -->
+          <div class="content-grid">
+            <article class="surface">
+              <div class="card-header-flex">
+                <span class="kicker">7-WEEK SPRINT ROADMAP</span>
+                <button type="button" id="copy-roadmap-btn" class="button outline mini">📋 Copy Plan</button>
+              </div>
+              <h3>Step-by-Step Execution Path</h3>
+              <ol id="roadmap-list" class="timeline"></ol>
+            </article>
+            <article class="surface">
+              <span class="kicker">TARGETED INTERVIEW PROMPTS</span>
+              <h3>Role-Specific Technical & Scenario Questions</h3>
+              <ol id="interview-list" class="number-list"></ol>
+            </article>
+          </div>
+
+          <!-- Tailored Project Proposals -->
+          <article class="surface project-ideas-section" id="project-ideas-box">
+            <span class="kicker">RECOMMENDED PORTFOLIO PROJECTS</span>
+            <h3>Tailored Projects to Close Your Skill Gaps</h3>
+            <div id="project-ideasList" class="project-ideas-grid"></div>
+          </article>
+
+          <!-- Verified Company Eligibility Registry -->
+          <article class="surface eligibility-section">
+            <div class="card-header-flex">
+              <div>
+                <span class="kicker">VERIFIED EMPLOYER REGISTRY</span>
+                <h3>Company Criteria Matching</h3>
+              </div>
+              <span class="verified-source-badge">Official Criteria Only</span>
+            </div>
+            <p class="section-subtext">Criteria are displayed only when an official link is verified by an authenticated administrator.</p>
+            <div id="eligibility-list" class="eligibility-grid"></div>
+          </article>
+
+          <!-- Recommended Live Roles for this Profile -->
+          <article class="surface recommended-jobs-section">
+            <span class="kicker">MATCHING LIVE ROLES</span>
+            <h3 id="rec-jobs-title">Real-time Openings Matching This Profile</h3>
+            <div id="recommended-job-list" class="job-list"></div>
+          </article>
+        </section>
+      </section>
+
+      <!-- ================= 03 / LIVE OPPORTUNITIES VIEW ================= -->
+      <section class="view" id="jobs">
+        <div class="view-heading">
+          <span class="kicker">LIVE IT OPPORTUNITIES</span>
+          <h2>Search across<br><em>real-time industry signals.</em></h2>
+          <p>Adzuna-first live IT career search. Filter by role, country, location, and seniority from entry-level to senior architects.</p>
+        </div>
+
+        <form id="job-form" class="surface search-surface">
+          <div class="search-field">
+            <label for="job-query">Job Title / Keyword</label>
+            <input id="job-query" required value="Software Developer" placeholder="e.g. Cloud Engineer, Data Analyst">
+          </div>
+          <div class="search-field">
+            <label for="job-location">Location (Optional)</label>
+            <input id="job-location" placeholder="e.g. Bengaluru, Remote, London">
+          </div>
+          <div class="search-field">
+            <label for="job-country">Country</label>
+            <select id="job-country">
+              <option value="in" selected>India (₹)</option>
+              <option value="us">United States ($)</option>
+              <option value="gb">United Kingdom (£)</option>
+              <option value="ca">Canada (C$)</option>
+              <option value="au">Australia (A$)</option>
+            </select>
+          </div>
+          <div class="search-field">
+            <label for="job-level">Experience Level</label>
+            <select id="job-level">
+              <option value="">All Levels</option>
+              <option value="Fresher / Entry">Fresher / Entry</option>
+              <option value="Mid-level">Mid-level</option>
+              <option value="Senior+">Senior+</option>
+            </select>
+          </div>
+          <div class="search-action">
+            <button class="button primary search-btn" type="submit">
+              <span>⌁ Search Roles</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="jobs-toolbar">
+          <p id="jobs-meta" class="jobs-meta-text">Enter search criteria to retrieve live market opportunities.</p>
+          <button id="load-more" class="button ghost small" hidden>Load More Results ↓</button>
+        </div>
+
+        <div id="job-list" class="job-list"></div>
+      </section>
+
+      <!-- ================= 04 / RÉSUMÉ LAB VIEW ================= -->
+      <section class="view" id="resume">
+        <div class="view-heading">
+          <span class="kicker">RÉSUMÉ ATS LAB</span>
+          <h2>Make your résumé<br><em>demonstrate the proof.</em></h2>
+          <p>Upload a text-based PDF or TXT résumé. Files are processed entirely in memory and never stored or shared.</p>
+        </div>
+
+        <div class="surface resume-card">
+          <form id="resume-form" class="resume-upload-grid">
+            <label class="dropzone" id="resume-dropzone">
+              <input id="resume-file" type="file" accept=".pdf,.txt" required>
+              <span class="dropzone-icon">📄</span>
+              <strong id="dropzone-label">Drag & drop your PDF or TXT résumé</strong>
+              <small id="dropzone-sub">or click to browse from device (Max 4 MB)</small>
+              <span id="selected-file-badge" class="file-name-badge" hidden></span>
+            </label>
+
+            <div class="resume-inputs">
+              <label>Target IT Role
+                <input id="resume-role" list="role-suggestions" required placeholder="e.g. Cloud Engineer" value="Software Developer">
+              </label>
+              <div class="resume-submit-box">
+                <button class="button primary large full-width" type="submit" id="resume-analyze-btn">
+                  <span>Analyze Résumé</span>
+                  <span class="arrow">→</span>
+                </button>
+              </div>
+            </div>
+          </form>
+          <p id="resume-error" class="message" hidden></p>
+        </div>
+
+        <!-- Résumé Results View -->
+        <section id="resume-results" class="resume-results-section" hidden>
+          <div class="resume-score-card surface">
+            <div class="score-circle-wrap">
+              <svg class="score-circle-svg" viewBox="0 0 120 120">
+                <circle class="score-bg-ring" cx="60" cy="60" r="50" />
+                <circle class="score-progress-ring" id="resume-strength-ring" cx="60" cy="60" r="50" />
+              </svg>
+              <div class="score-text-overlay">
+                <strong id="resume-score">0%</strong>
+                <span>ATS SCORE</span>
+              </div>
+            </div>
+            <p id="resume-source" class="resume-benchmark-note"></p>
+          </div>
+
+          <div class="content-grid">
+            <article class="surface">
+              <span class="kicker">DETECTED TECHNICAL SKILLS</span>
+              <h3>Extracted Skills & Competencies</h3>
+              <div id="resume-skills" class="chips"></div>
+
+              <span class="kicker mt-1">MISSING ROLE KEYWORDS</span>
+              <h3>Critical Role Keywords to Add</h3>
+              <div id="resume-missing-skills" class="chips gap-chips"></div>
+            </article>
+
+            <article class="surface">
+              <span class="kicker">ATS SECTION HEALTH</span>
+              <h3>Required Structural Sections</h3>
+              <ul id="resume-sections-checklist" class="checklist-grid"></ul>
+
+              <span class="kicker mt-1">OPTIMIZATION RECOMMENDATIONS</span>
+              <h3>High-Impact Enhancements</h3>
+              <ul id="resume-suggestions" class="arrow-list"></ul>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <!-- ================= 05 / DEVELOPER VIEW ================= -->
+      <section class="view" id="developer">
+        <div class="view-heading">
+          <span class="kicker">ABOUT THE PLATFORM & DEVELOPER</span>
+          <h2>A platform engineered to turn<br><em>career uncertainty into action.</em></h2>
+        </div>
+
+        <div class="developer-grid">
+          <article class="developer-profile surface" data-tilt>
+            <div class="developer-mark">&lt;/&gt;</div>
+            <span class="kicker">PROJECT CREATOR</span>
+            <h3>Anish Ankareddy</h3>
+            <p class="developer-role-tag">Full-Stack AI & Cloud Developer</p>
+            <p class="developer-bio">
+              Passionate engineer building accessible, evidence-grounded tools to empower students and professionals in navigating IT industry hiring, verified standards, and live market dynamics.
+            </p>
+            <div class="dev-links">
+              <a href="https://github.com/ankareddyanish06-ctrl/jobfit" target="_blank" rel="noreferrer" class="button ghost small">
+                <span>View on GitHub ↗</span>
+              </a>
+              <a href="https://linkedin.com/" target="_blank" rel="noreferrer" class="button subtle small">
+                <span>Connect on LinkedIn ↗</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="surface">
+            <span class="kicker">TECHNICAL ARCHITECTURE</span>
+            <h3>Modern High-Performance Stack</h3>
+            <ul class="stack-list">
+              <li>
+                <b>FastAPI (Python 3.11+)</b>
+                <span>Asynchronous, type-safe REST API service</span>
+              </li>
+              <li>
+                <b>Multi-Provider Engine</b>
+                <span>Adzuna API primary + The Muse fallback strategy</span>
+              </li>
+              <li>
+                <b>Google OAuth / OIDC</b>
+                <span>Starlette session middleware with HTTPS security</span>
+              </li>
+              <li>
+                <b>SQLite / PostgreSQL Ready</b>
+                <span>Persistent assessment history & verified employer criteria</span>
+              </li>
+              <li>
+                <b>In-Memory PDF Parsing</b>
+                <span>PyPDF memory stream extraction without disk persistence</span>
+              </li>
+              <li>
+                <b>Black 3D Visual System</b>
+                <span>Modern CSS variables, 3D perspective, responsive design</span>
+              </li>
+            </ul>
+          </article>
+        </div>
+
+        <article class="surface project-note">
+          <span class="kicker">DATA INTEGRITY & ETHICAL CAREER GUIDANCE</span>
+          <p>
+            JobFit evaluates profiles against verifiable technical frameworks and live job provider listings. It strictly avoids automated algorithmic rejection models or unsubstantiated "placement odds." All employer requirements must be backed by official career links.
+          </p>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <script src="app.js" defer></script>
 </body>
 </html>
+
