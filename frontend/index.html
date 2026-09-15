@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#050608">
-  <meta name="description" content="JobFit — Live IT Career Intelligence Platform. Real-time opportunity signals, open-ended IT role diagnostics, and verified employer criteria.">
-  <title>JobFit — Live IT Career Intelligence Platform</title>
+  <meta name="description" content="JobFit — Student Career Intelligence & Opportunity Hub. Evidence-based profile analysis, ATS resume center, internships, and application tracking.">
+  <title>JobFit — Student Career Intelligence & Opportunity Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Black 3D Space Background Elements -->
+  <!-- Black 3D Cyber Space Canvas Background -->
   <div class="space-field" aria-hidden="true">
     <canvas id="starfield-canvas"></canvas>
     <i class="orb orb-one"></i>
@@ -34,26 +34,35 @@
         </a>
         <div class="status-indicator-pill">
           <i class="pulse-dot"></i>
-          <span id="sidebar-provider-status">Live Connected</span>
+          <span id="sidebar-provider-status">Connected</span>
         </div>
       </div>
 
+      <!-- 7-Section Navigation -->
       <nav aria-label="Main Navigation">
         <a href="#home" data-view="home" class="nav-item active">
           <span class="nav-icon">◈</span>
           <span class="nav-label">Overview</span>
         </a>
-        <a href="#analysis" data-view="analysis" class="nav-item">
-          <span class="nav-icon">◫</span>
-          <span class="nav-label">Profile Analysis</span>
+        <a href="#profile" data-view="profile" class="nav-item">
+          <span class="nav-icon">👤</span>
+          <span class="nav-label">Profile</span>
         </a>
-        <a href="#jobs" data-view="jobs" class="nav-item">
+        <a href="#opportunities" data-view="opportunities" class="nav-item">
           <span class="nav-icon">⌁</span>
-          <span class="nav-label">Live Opportunities</span>
+          <span class="nav-label">Opportunities</span>
         </a>
         <a href="#resume" data-view="resume" class="nav-item">
           <span class="nav-icon">▣</span>
-          <span class="nav-label">Résumé Lab</span>
+          <span class="nav-label">Resume Center</span>
+        </a>
+        <a href="#roadmap" data-view="roadmap" class="nav-item">
+          <span class="nav-icon">◫</span>
+          <span class="nav-label">Career Roadmap</span>
+        </a>
+        <a href="#applications" data-view="applications" class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span class="nav-label">Applications</span>
         </a>
         <a href="#developer" data-view="developer" class="nav-item">
           <span class="nav-icon">◉</span>
@@ -72,9 +81,9 @@
       </div>
     </aside>
 
-    <!-- Main Workspace -->
+    <!-- Main Content Workspace -->
     <main class="workspace">
-      <!-- Mobile Top Navigation Header -->
+      <!-- Mobile Top Bar -->
       <header class="mobile-header">
         <a class="brand" href="#home">
           <span class="brand-badge">⚡</span>
@@ -86,33 +95,33 @@
         </div>
       </header>
 
-      <!-- ================= 01 / OVERVIEW VIEW ================= -->
+      <!-- ================= 01 / OVERVIEW DASHBOARD ================= -->
       <section class="view active" id="home">
         <div class="home-grid">
           <article class="hero-card" data-tilt>
             <div class="hero-header-badge">
-              <span class="kicker">LIVE CAREER INTELLIGENCE</span>
-              <span class="version-badge">v4.0 Live</span>
+              <span class="kicker">STUDENT CAREER INTELLIGENCE & OPPORTUNITY HUB</span>
+              <span class="version-badge">v4.0 Production</span>
             </div>
-            <h1>Make the next move <em>visible.</em></h1>
+            <h1>Make every career move <em>evidence-based.</em></h1>
             <p class="hero-desc">
-              Search real-time IT roles, benchmark your technical evidence against live market demands, and execute a structured roadmap instead of guessing.
+              Connect profile diagnostics, ATS-ready resume creation, student-first opportunities (internships, fresher jobs & graduate programs), and application tracking in one unified workspace.
             </p>
             <div class="hero-actions">
-              <a class="button primary" href="#analysis">
-                <span>Run Profile Analysis</span>
+              <a class="button primary" href="#profile">
+                <span>Complete Student Profile</span>
                 <span class="arrow">→</span>
               </a>
-              <a class="button ghost" href="#jobs">
-                <span>⌁ Search Live Jobs</span>
+              <a class="button ghost" href="#opportunities">
+                <span>⌁ Explore Opportunities</span>
               </a>
               <a class="button subtle" href="#resume">
-                <span>▣ Résumé Lab</span>
+                <span>▣ Resume Center</span>
               </a>
             </div>
             <div class="provider-line">
               <i class="live-dot"></i>
-              <span id="provider-text">Connecting to live providers…</span>
+              <span id="provider-text">Connected to live career network</span>
             </div>
           </article>
 
@@ -120,13 +129,13 @@
           <article class="orbit-card" data-tilt>
             <div class="orbit-container">
               <div class="orbit-center">
-                <span class="orbit-core-text">YOU</span>
+                <span class="orbit-core-text" id="orbit-center-text">YOU</span>
               </div>
               <div class="orbit-ring ring-1">
-                <span class="orbit-node node-1">SKILLS</span>
+                <span class="orbit-node node-1">PROFILE</span>
               </div>
               <div class="orbit-ring ring-2">
-                <span class="orbit-node node-2">ROLES</span>
+                <span class="orbit-node node-2">RESUME ATS</span>
               </div>
               <div class="orbit-ring ring-3">
                 <span class="orbit-node node-3">LIVE JOBS</span>
@@ -135,23 +144,58 @@
             <div class="orbit-caption">
               <span>Profile Evidence</span>
               <strong>→</strong>
-              <span>Market Signals</span>
+              <span>ATS Readiness</span>
               <strong>→</strong>
-              <span>Career Growth</span>
+              <span>Applications</span>
             </div>
           </article>
         </div>
 
+        <!-- Student Progress & Metric Row -->
+        <div class="score-row mt-1">
+          <article class="metric-card">
+            <span class="metric-label">Resume ATS Readiness</span>
+            <strong id="dash-ats-score" class="metric-val">--%</strong>
+            <div class="metric-bar"><i id="dash-ats-bar" style="width: 0%"></i></div>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Target Role Alignment</span>
+            <strong id="dash-role-name" class="metric-val" style="font-size:1.1rem; word-break:break-word;">Software Developer</strong>
+            <div class="metric-bar"><i style="width: 75%; background: var(--accent-cyan);"></i></div>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Active Applications</span>
+            <strong id="dash-apps-count" class="metric-val">0</strong>
+            <div class="metric-bar"><i id="dash-apps-bar" style="width: 0%"></i></div>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Saved Opportunities</span>
+            <strong id="dash-saved-count" class="metric-val">0</strong>
+            <div class="metric-bar"><i id="dash-saved-bar" style="width: 0%"></i></div>
+          </article>
+        </div>
+
+        <!-- Strategic Next Best Action Banner -->
+        <article class="surface mt-1 action-banner" id="dash-next-action-card">
+          <div class="banner-badge">⚡ YOUR NEXT BEST ACTIONS</div>
+          <ul id="dash-next-actions-list" class="arrow-list mt-half">
+            <li>Complete your Student Profile to unlock tailored opportunity matching.</li>
+            <li>Upload or create your resume in Resume Center to verify ATS readiness.</li>
+            <li>Explore Opportunities Hub to find matching internships or fresher roles.</li>
+          </ul>
+        </article>
+
         <!-- Quick Trending Roles Strip -->
-        <div class="quick-roles-bar">
-          <span class="quick-label">⚡ Explore Trending Roles:</span>
+        <div class="quick-roles-bar mt-1">
+          <span class="quick-label">⚡ Explore Roles:</span>
           <div class="quick-chips" id="quick-role-chips">
-            <button type="button" class="role-pill" data-role="AI / Machine Learning Engineer">AI / ML Engineer</button>
             <button type="button" class="role-pill" data-role="Software Developer">Software Developer</button>
+            <button type="button" class="role-pill" data-role="Frontend Developer">Frontend Developer</button>
+            <button type="button" class="role-pill" data-role="Backend Developer">Backend Developer</button>
             <button type="button" class="role-pill" data-role="Full Stack Developer">Full Stack</button>
-            <button type="button" class="role-pill" data-role="Cloud Engineer">Cloud Engineer</button>
-            <button type="button" class="role-pill" data-role="DevOps Engineer">DevOps</button>
             <button type="button" class="role-pill" data-role="Data Analyst">Data Analyst</button>
+            <button type="button" class="role-pill" data-role="AI / Machine Learning Engineer">AI / ML</button>
+            <button type="button" class="role-pill" data-role="Cloud Engineer">Cloud Engineer</button>
             <button type="button" class="role-pill" data-role="Cybersecurity Analyst">Cybersecurity</button>
           </div>
         </div>
@@ -160,109 +204,553 @@
         <div class="feature-strip">
           <article class="feature-card">
             <span class="feat-num">01</span>
-            <h3>Open-Ended IT Roles</h3>
-            <p>From fresher graduate roles to senior architects, analyze any IT specialism across the industry.</p>
+            <h3>Student Profile & Diagnostics</h3>
+            <p>Maintain your academic profile, verify eligibility for top IT employers, and pinpoint exact skill gaps.</p>
           </article>
           <article class="feature-card">
             <span class="feat-num">02</span>
-            <h3>Multi-Provider Real Jobs</h3>
-            <p>Adzuna-first real-time search with The Muse fallback. Direct links and verified criteria only.</p>
+            <h3>ATS Resume Center</h3>
+            <p>Upload PDF/DOCX/TXT resumes or build from scratch using 3 clean machine-readable templates with instant export.</p>
           </article>
           <article class="feature-card">
             <span class="feat-num">03</span>
-            <h3>Actionable 7-Week Sprint</h3>
-            <p>Targeted skill-gap remediation, customized interview questions, and tailored portfolio projects.</p>
+            <h3>Opportunities & Tracker</h3>
+            <p>Filter student programs, internships, and fresher roles. Track applications from Saved to Offer stage.</p>
           </article>
         </div>
       </section>
 
-      <!-- ================= 02 / PROFILE ANALYSIS VIEW ================= -->
-      <section class="view" id="analysis">
+      <!-- ================= 02 / PROFILE SYSTEM ================= -->
+      <section class="view" id="profile">
         <div class="view-heading">
-          <span class="kicker">PROFILE ANALYSIS & DIAGNOSTICS</span>
-          <h2>Your evidence,<br><em>not a fake prediction.</em></h2>
-          <p>Choose any IT role. JobFit evaluates your technical profile against role competencies, verified company standards, and live opportunity listings.</p>
+          <span class="kicker">STUDENT PROFILE SYSTEM</span>
+          <h2>Your Academic & Technical<br><em>Career Identity</em></h2>
+          <p>This profile powers your skill-gap diagnostics, opportunity recommendations, and ATS resume builder.</p>
         </div>
 
-        <form id="profile-form" class="surface form-surface">
+        <form id="student-profile-form" class="surface form-surface">
           <div class="form-header-bar">
-            <span class="section-label">01 / CANDIDATE BACKGROUND & TARGET</span>
-            <button type="button" id="autofill-profile" class="button outline small">⚡ Fill Sample Profile</button>
+            <span class="section-label">01 / PERSONAL & CONTACT INFORMATION</span>
+            <button type="button" id="autofill-student-profile" class="button outline small">⚡ Load Sample Profile</button>
+          </div>
+
+          <div class="form-grid four">
+            <label>Full Name
+              <input id="prof-name" required placeholder="e.g. Anish Reddy" value="Anish Reddy">
+            </label>
+            <label>Email Address
+              <input id="prof-email" type="email" placeholder="user@example.com" readonly>
+            </label>
+            <label>Phone Number
+              <input id="prof-phone" placeholder="+91 98765 43210" value="+91 98765 43210">
+            </label>
+            <label>Current Location
+              <input id="prof-location" placeholder="e.g. Bengaluru, India" value="Bengaluru, India">
+            </label>
           </div>
 
           <div class="form-grid three">
-            <label>Full Name
-              <input id="name" required minlength="2" placeholder="e.g. Anish Reddy" value="Anish Reddy">
+            <label>GitHub Profile
+              <input id="prof-github" placeholder="https://github.com/username" value="https://github.com/ankareddyanish06-ctrl">
             </label>
+            <label>LinkedIn Profile
+              <input id="prof-linkedin" placeholder="https://linkedin.com/in/username" value="https://linkedin.com/in/anishreddy">
+            </label>
+            <label>Portfolio / Website
+              <input id="prof-portfolio" placeholder="https://yourportfolio.dev" value="https://jobfit.dev">
+            </label>
+          </div>
+
+          <div class="section-label mt-1">02 / ACADEMIC BACKGROUND</div>
+          <div class="form-grid four">
             <label>Degree
-              <input id="degree" required placeholder="e.g. B.Tech / B.E. / MCA" value="B.Tech">
+              <input id="prof-degree" required placeholder="e.g. B.Tech / B.E. / MCA" value="B.Tech">
             </label>
             <label>Branch / Major
-              <input id="branch" required placeholder="e.g. CSE / IT / ECE" value="CSE">
+              <input id="prof-branch" required placeholder="e.g. CSE / IT / ECE" value="CSE">
+            </label>
+            <label>College / University
+              <input id="prof-college" placeholder="e.g. National Institute of Technology" value="National Institute of Technology">
+            </label>
+            <label>Graduation Year
+              <input id="prof-grad-year" type="number" min="2020" max="2040" value="2026" required>
             </label>
           </div>
 
-          <div class="form-grid four">
-            <label>Graduation Year
-              <input id="graduation-year" type="number" min="2020" max="2040" value="2026" required>
-            </label>
-            <label>CGPA (Scale of 10)
-              <input id="cgpa" type="number" min="0" max="10" step="0.01" value="8.4" required>
+          <div class="form-grid three">
+            <label>Current CGPA (Scale of 10)
+              <input id="prof-cgpa" type="number" min="0" max="10" step="0.01" value="8.65" required>
             </label>
             <label>Active Backlogs
-              <input id="backlogs" type="number" min="0" max="20" value="0" required>
+              <input id="prof-backlogs" type="number" min="0" max="20" value="0" required>
             </label>
-            <label>Target IT Role
-              <input id="target-role" list="role-suggestions" required placeholder="e.g. Full Stack Developer" value="Full Stack Developer">
-              <datalist id="role-suggestions"></datalist>
+            <label>Academic Standing / Year
+              <select id="prof-academic-year">
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year (Pre-Final)">3rd Year (Pre-Final)</option>
+                <option value="Final Year" selected>Final Year</option>
+                <option value="Recent Graduate">Recent Graduate</option>
+              </select>
             </label>
           </div>
 
-          <div class="section-label">02 / TECHNICAL EVIDENCE & SKILLS</div>
+          <div class="section-label mt-1">03 / TECHNICAL COMPETENCIES</div>
           <div class="form-grid three">
-            <label>Technical Skills (Comma separated)
-              <textarea id="technical-skills" required placeholder="Python, JavaScript, React, SQL, Git, REST API, Docker">Python, JavaScript, React, SQL, Git, REST API, Docker</textarea>
-              <small class="field-hint">Tip: Include languages, frameworks, cloud, and tools</small>
+            <label>Programming Languages
+              <textarea id="prof-languages" placeholder="Python, JavaScript, TypeScript, C++, Java">Python, JavaScript, TypeScript, C++, SQL</textarea>
+              <small class="field-hint">Comma separated</small>
             </label>
-            <label>Soft Skills & Attributes
-              <textarea id="soft-skills" placeholder="Problem Solving, Teamwork, Communication, Agile">Problem Solving, Agile Collaboration, Technical Writing</textarea>
+            <label>Frameworks & Libraries
+              <textarea id="prof-frameworks" placeholder="React, Node.js, FastAPI, Express">React, Node.js, FastAPI, Express.js</textarea>
+              <small class="field-hint">Comma separated</small>
             </label>
-            <label>Certifications (Optional)
-              <textarea id="certifications" placeholder="AWS Certified Cloud Practitioner, Oracle Java Associate">AWS Certified Cloud Practitioner</textarea>
+            <label>Databases & Cloud
+              <textarea id="prof-cloud-db" placeholder="PostgreSQL, MongoDB, AWS, Docker, Git">PostgreSQL, MongoDB, AWS, Docker, Git, REST API</textarea>
+              <small class="field-hint">Comma separated</small>
             </label>
           </div>
 
-          <div class="section-label">03 / PRACTICAL EXPERIENCE & READINESS ASSESSMENTS</div>
+          <div class="section-label mt-1">04 / CAREER GOALS & PREFERENCES</div>
           <div class="form-grid four">
-            <label>Completed Projects
-              <input id="projects" type="number" min="0" max="40" value="3" required>
+            <label>Target IT Role
+              <input id="prof-target-role" list="role-suggestions" required placeholder="e.g. Full Stack Developer" value="Full Stack Developer">
             </label>
-            <label>Internships Completed
-              <input id="internships" type="number" min="0" max="20" value="1" required>
+            <label>Opportunity Preference
+              <select id="prof-opp-pref">
+                <option value="Both" selected>Both (Internship & Full-Time)</option>
+                <option value="Internship">Internship Only</option>
+                <option value="Full-Time">Full-Time Only</option>
+              </select>
             </label>
-            <label>Aptitude Assessment (0–100)
-              <input id="aptitude" type="number" min="0" max="100" value="75" required>
+            <label>Remote Preference
+              <select id="prof-remote-pref">
+                <option value="Any" selected>Any (Remote, Hybrid, On-site)</option>
+                <option value="Remote">Remote Only</option>
+                <option value="Hybrid">Hybrid</option>
+                <option value="On-site">On-site</option>
+              </select>
             </label>
-            <label>Interview Confidence (0–100)
-              <input id="interview" type="number" min="0" max="100" value="70" required>
+            <label>Preferred Locations
+              <input id="prof-locations" placeholder="e.g. Bengaluru, Hyderabad, Remote" value="Bengaluru, Hyderabad, Remote">
             </label>
           </div>
 
-          <p id="profile-error" class="message" hidden></p>
           <div class="form-footer">
-            <button id="analyze-button" class="button primary large" type="submit">
-              <span>Run Evidence Analysis</span>
-              <span class="arrow">→</span>
+            <button id="save-profile-btn" class="button primary large" type="submit">
+              <span>Save Student Profile</span>
+              <span class="arrow">✓</span>
             </button>
-            <span class="disclaimer-text">🔒 Processed securely. No data shared without consent.</span>
+            <a class="button ghost" href="#roadmap">
+              <span>Run Career Analysis →</span>
+            </a>
+            <span class="disclaimer-text">🔒 Stored securely in your private workspace.</span>
+          </div>
+        </form>
+      </section>
+
+      <!-- ================= 03 / OPPORTUNITIES HUB ================= -->
+      <section class="view" id="opportunities">
+        <div class="view-heading">
+          <span class="kicker">OPPORTUNITIES HUB</span>
+          <h2>Student-first roles,<br><em>transparent alignment.</em></h2>
+          <p>Explore live IT opportunities across internships, fresher roles, graduate trainee programs, and fellowships. Filter by category, location, and workplace mode.</p>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="category-tabs-bar" id="opportunity-category-tabs">
+          <button type="button" class="cat-pill active" data-category="All">All Roles</button>
+          <button type="button" class="cat-pill" data-category="Internships">Internships</button>
+          <button type="button" class="cat-pill" data-category="Fresher Jobs">Fresher Jobs</button>
+          <button type="button" class="cat-pill" data-category="Graduate Programs">Graduate Programs</button>
+          <button type="button" class="cat-pill" data-category="Student Programs">Student Programs</button>
+          <button type="button" class="cat-pill" data-category="Remote">Remote</button>
+          <button type="button" class="cat-pill" data-category="Part-Time">Part-Time</button>
+        </div>
+
+        <!-- Search & Filter Form -->
+        <form id="opp-search-form" class="surface search-surface mt-1">
+          <div class="search-field">
+            <label for="opp-query">Role / Technology / Program</label>
+            <input id="opp-query" required value="Software Developer" placeholder="e.g. Full Stack, Python Intern">
+          </div>
+          <div class="search-field">
+            <label for="opp-location">Location (Optional)</label>
+            <input id="opp-location" placeholder="e.g. Bengaluru, Remote, London">
+          </div>
+          <div class="search-field">
+            <label for="opp-country">Country</label>
+            <select id="opp-country">
+              <option value="in" selected>India (₹)</option>
+              <option value="us">United States ($)</option>
+              <option value="gb">United Kingdom (£)</option>
+              <option value="ca">Canada (C$)</option>
+              <option value="au">Australia (A$)</option>
+            </select>
+          </div>
+          <div class="search-field">
+            <label for="opp-level">Experience Tier</label>
+            <select id="opp-level">
+              <option value="">All Tiers</option>
+              <option value="Fresher / Entry">Fresher / Entry / Intern</option>
+              <option value="Mid-level">Mid-level</option>
+              <option value="Senior+">Senior+</option>
+            </select>
+          </div>
+          <div class="search-action">
+            <button class="button primary search-btn" type="submit">
+              <span>⌁ Find Opportunities</span>
+            </button>
           </div>
         </form>
 
-        <!-- Dynamic Analysis Results Container -->
-        <section id="analysis-results" class="analysis-results-section" hidden>
+        <div class="jobs-toolbar">
+          <p id="opp-meta" class="jobs-meta-text">Searching opportunities…</p>
+          <button id="opp-load-more" class="button ghost small" hidden>Load More ↓</button>
+        </div>
+
+        <!-- Opportunities Grid -->
+        <div id="opp-list" class="job-list"></div>
+      </section>
+
+      <!-- ================= 04 / RESUME CENTER ================= -->
+      <section class="view" id="resume">
+        <div class="view-heading">
+          <span class="kicker">RESUME CENTER</span>
+          <h2>ATS-Friendly Resumes<br><em>Engineered for Proof</em></h2>
+          <p>Create clean machine-readable resumes from scratch, upload existing files (.pdf, .docx, .txt), run comprehensive ATS checks, and optimize specifically for your target jobs.</p>
+        </div>
+
+        <!-- Resume Center Sub-Tabs Navigation -->
+        <div class="subtabs-bar" id="resume-tabs">
+          <button type="button" class="subtab-btn active" data-tab="my-resumes">My Resumes</button>
+          <button type="button" class="subtab-btn" data-tab="upload-resume">Upload Resume</button>
+          <button type="button" class="subtab-btn" data-tab="create-resume">Create Resume (Builder)</button>
+          <button type="button" class="subtab-btn" data-tab="ats-checker">ATS Readiness Check</button>
+          <button type="button" class="subtab-btn" data-tab="job-optimizer">Optimize for Job</button>
+        </div>
+
+        <!-- TAB 1: MY RESUMES -->
+        <div class="resume-tab-pane active" id="tab-pane-my-resumes">
+          <div class="card-header-flex mb-1">
+            <div>
+              <h3>Saved Resumes</h3>
+              <p class="section-subtext">Manage your tailored resume versions for different target roles.</p>
+            </div>
+            <button type="button" class="button primary small" id="trigger-create-new-resume">
+              <span>+ Create New Resume</span>
+            </button>
+          </div>
+          <div id="my-resumes-list" class="my-resumes-grid"></div>
+        </div>
+
+        <!-- TAB 2: UPLOAD RESUME -->
+        <div class="resume-tab-pane" id="tab-pane-upload-resume">
+          <div class="surface resume-card">
+            <form id="upload-resume-form" class="resume-upload-grid">
+              <label class="dropzone" id="resume-dropzone">
+                <input id="resume-file-input" type="file" accept=".pdf,.docx,.txt" required>
+                <span class="dropzone-icon">📄</span>
+                <strong id="dropzone-label">Drag & drop your PDF, DOCX, or TXT resume</strong>
+                <small id="dropzone-sub">or click to browse from device (Max 4 MB)</small>
+                <span id="selected-file-badge" class="file-name-badge" hidden></span>
+              </label>
+
+              <div class="resume-inputs">
+                <label>Target Role for ATS Benchmark
+                  <input id="upload-target-role" list="role-suggestions" required placeholder="e.g. Software Developer" value="Software Developer">
+                </label>
+                <div class="in-memory-note">
+                  🔒 <b>Privacy-First Processing:</b> Your resume is processed safely in volatile memory to extract structured data and calculate ATS metrics. Original files are discarded immediately.
+                </div>
+                <div class="resume-submit-box">
+                  <button class="button primary large full-width" type="submit" id="upload-analyze-btn">
+                    <span>Upload & Check ATS Readiness</span>
+                    <span class="arrow">→</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+            <p id="upload-error" class="message" hidden></p>
+          </div>
+        </div>
+
+        <!-- TAB 3: CREATE RESUME (GUIDED BUILDER) -->
+        <div class="resume-tab-pane" id="tab-pane-create-resume">
+          <div class="surface builder-surface">
+            <div class="builder-header-row">
+              <div>
+                <span class="kicker">STUDENT-FRIENDLY RESUME BUILDER</span>
+                <h3>Build Your ATS-Ready Resume</h3>
+              </div>
+              <div class="template-picker">
+                <label>Template:
+                  <select id="builder-template-select">
+                    <option value="classic" selected>Template 1 — ATS Classic</option>
+                    <option value="student">Template 2 — Student Focus</option>
+                    <option value="developer">Template 3 — Developer Focus</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+
+            <!-- Builder Multi-Section Form -->
+            <form id="builder-form" class="builder-sections-form">
+              <!-- 1. Header & Summary -->
+              <div class="builder-sec">
+                <h4>01 / Header & Summary</h4>
+                <div class="form-grid four">
+                  <label>Full Name <input id="b-name" required value="Anish Reddy"></label>
+                  <label>Email <input id="b-email" type="email" required value="anish.reddy@example.com"></label>
+                  <label>Phone <input id="b-phone" value="+91 98765 43210"></label>
+                  <label>Location <input id="b-location" value="Bengaluru, India"></label>
+                </div>
+                <div class="form-grid three mt-half">
+                  <label>GitHub URL <input id="b-github" value="https://github.com/username"></label>
+                  <label>LinkedIn URL <input id="b-linkedin" value="https://linkedin.com/in/username"></label>
+                  <label>Portfolio URL <input id="b-portfolio" value="https://portfolio.dev"></label>
+                </div>
+                <label class="mt-half">Professional Summary
+                  <textarea id="b-summary" rows="3">Dedicated computer science student with hands-on experience building full-stack web applications and scalable REST APIs. Passionate about software engineering, system design, and clean architecture.</textarea>
+                </label>
+              </div>
+
+              <!-- 2. Education -->
+              <div class="builder-sec">
+                <div class="card-header-flex">
+                  <h4>02 / Education</h4>
+                  <button type="button" id="b-add-edu-btn" class="button outline mini">+ Add Education</button>
+                </div>
+                <div id="b-edu-container" class="dynamic-rows-container">
+                  <div class="dynamic-row-card">
+                    <div class="form-grid four">
+                      <label>Degree <input class="b-edu-degree" value="B.Tech in Computer Science"></label>
+                      <label>Institution <input class="b-edu-inst" value="National Institute of Technology"></label>
+                      <label>Year <input class="b-edu-year" value="2022 – 2026"></label>
+                      <label>CGPA / Score <input class="b-edu-score" value="8.65 / 10.0"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3. Technical Skills -->
+              <div class="builder-sec">
+                <h4>03 / Technical Skills</h4>
+                <div class="form-grid four">
+                  <label>Languages <input id="b-skills-lang" value="Python, JavaScript, TypeScript, C++, SQL"></label>
+                  <label>Frameworks <input id="b-skills-frameworks" value="React, Node.js, FastAPI, Express.js"></label>
+                  <label>Databases <input id="b-skills-db" value="PostgreSQL, MongoDB, Redis"></label>
+                  <label>Cloud & Tools <input id="b-skills-tools" value="AWS, Docker, Git, Linux, REST API"></label>
+                </div>
+              </div>
+
+              <!-- 4. Projects -->
+              <div class="builder-sec">
+                <div class="card-header-flex">
+                  <div>
+                    <h4>04 / Technical Projects</h4>
+                    <p class="section-subtext">Use STAR-method impact statements (e.g. 'Improved response time by 30%').</p>
+                  </div>
+                  <button type="button" id="b-add-proj-btn" class="button outline mini">+ Add Project</button>
+                </div>
+                <div id="b-proj-container" class="dynamic-rows-container">
+                  <div class="dynamic-row-card">
+                    <div class="form-grid three">
+                      <label>Project Title <input class="b-proj-title" value="JobFit — Career Intelligence Hub"></label>
+                      <label>Technologies Used <input class="b-proj-tech" value="Python, FastAPI, SQLite, Vanilla JS, Docker"></label>
+                      <label>Demo / Repo Link <input class="b-proj-link" value="https://github.com/username/jobfit"></label>
+                    </div>
+                    <label class="mt-half">Bullet Points (One per line)
+                      <textarea class="b-proj-bullets" rows="3">• Architected a full-stack career platform integrating real-time job APIs and AST text extraction.
+• Implemented ATS readiness scoring and in-memory DOCX/PDF generation without disk persistence.
+• Engineered responsive black 3D user interface maintaining sub-100ms client interactions.</textarea>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. Experience / Internships -->
+              <div class="builder-sec">
+                <div class="card-header-flex">
+                  <div>
+                    <h4>05 / Experience & Internships</h4>
+                    <p class="section-subtext">No internship yet? Leave blank or highlight academic labs/contributions.</p>
+                  </div>
+                  <button type="button" id="b-add-exp-btn" class="button outline mini">+ Add Experience</button>
+                </div>
+                <div id="b-exp-container" class="dynamic-rows-container">
+                  <div class="dynamic-row-card">
+                    <div class="form-grid three">
+                      <label>Role / Title <input class="b-exp-role" value="Software Engineering Intern"></label>
+                      <label>Company / Organization <input class="b-exp-company" value="Acme Tech Labs"></label>
+                      <label>Duration <input class="b-exp-duration" value="May 2025 – July 2025"></label>
+                    </div>
+                    <label class="mt-half">Impact Bullets (One per line)
+                      <textarea class="b-exp-bullets" rows="2">• Collaborated with senior engineers to build microservice endpoints serving 10,000+ daily requests.
+• Refactored SQL query bottlenecks, reducing average database latency by 28%.</textarea>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 6. Certifications & Achievements -->
+              <div class="builder-sec">
+                <div class="form-grid two">
+                  <label>Certifications (One per line)
+                    <textarea id="b-certifications" rows="3">AWS Certified Cloud Practitioner
+Oracle Certified Associate, Java SE 8 Programmer</textarea>
+                  </label>
+                  <label>Achievements & Leadership (One per line)
+                    <textarea id="b-achievements" rows="3">1st Place — National Collegiate Hackathon 2025
+Lead Organizer — University Google Developer Student Club (GDSC)</textarea>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="builder-actions-row">
+                <button type="submit" id="b-save-resume-btn" class="button primary">
+                  <span>Save to My Resumes</span>
+                </button>
+                <button type="button" id="b-download-pdf-btn" class="button ghost">
+                  <span>Download ATS PDF ↓</span>
+                </button>
+                <button type="button" id="b-download-docx-btn" class="button ghost">
+                  <span>Download ATS DOCX ↓</span>
+                </button>
+                <button type="button" id="b-eval-ats-btn" class="button subtle">
+                  <span>Evaluate ATS Score ⚡</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- TAB 4: ATS READINESS CHECKER -->
+        <div class="resume-tab-pane" id="tab-pane-ats-checker">
+          <div id="ats-report-container">
+            <div class="resume-score-card surface">
+              <div class="score-circle-wrap">
+                <svg class="score-circle-svg" viewBox="0 0 120 120">
+                  <circle class="score-bg-ring" cx="60" cy="60" r="50" />
+                  <circle class="score-progress-ring" id="ats-score-ring" cx="60" cy="60" r="50" />
+                </svg>
+                <div class="score-text-overlay">
+                  <strong id="ats-score-display">0%</strong>
+                  <span>ATS SCORE</span>
+                </div>
+              </div>
+              <div class="ats-score-right">
+                <span class="kicker">ATS READINESS DIAGNOSTIC</span>
+                <h3 id="ats-score-heading">Upload or Build a Resume to Evaluate</h3>
+                <p id="ats-score-target" class="source-note">Evaluated against IT role standards.</p>
+                <p class="section-subtext" style="font-size:0.75rem;">
+                  Educational readiness score based on structural clarity, measurable impact metrics, and action verbs. Does not guarantee third-party ATS pass rates.
+                </p>
+              </div>
+            </div>
+
+            <div class="content-grid mt-1">
+              <article class="surface">
+                <span class="kicker">SECTION HEALTH CHECKLIST</span>
+                <h3>Required Structural Elements</h3>
+                <ul id="ats-checklist" class="checklist-grid"></ul>
+
+                <span class="kicker mt-1">CONTENT METRICS</span>
+                <h3>Action Verbs & Impact Quantification</h3>
+                <div id="ats-metrics-box" class="chips"></div>
+              </article>
+
+              <article class="surface">
+                <span class="kicker">RECOMMENDED ENHANCEMENTS</span>
+                <h3>High-Impact Resume Improvements</h3>
+                <ul id="ats-suggestions" class="arrow-list"></ul>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: OPTIMIZE FOR JOB -->
+        <div class="resume-tab-pane" id="tab-pane-job-optimizer">
+          <div class="surface">
+            <span class="kicker">JOB-SPECIFIC RESUME OPTIMIZATION</span>
+            <h3>Compare Your Resume to a Job Description</h3>
+            <p class="section-subtext">
+              Identify missing competencies and keyword alignment. <b>Never fabricate skills</b>: add missing competencies only if you genuinely have experience with them.
+            </p>
+
+            <form id="job-optimize-form" class="mt-1">
+              <div class="form-grid two">
+                <label>Job Title
+                  <input id="opt-job-title" required placeholder="e.g. Associate Data Analyst" value="Software Developer">
+                </label>
+                <label>Resume to Compare
+                  <select id="opt-resume-select">
+                    <option value="builder">Current Builder / Uploaded Resume</option>
+                  </select>
+                </label>
+              </div>
+              <label class="mt-half">Job Description Requirements
+                <textarea id="opt-job-desc" rows="5" required placeholder="Paste the job requirements or description here (e.g. Python, SQL, REST APIs, Docker, Git...)">Looking for an Associate Software Developer skilled in Python, SQL, REST APIs, Docker, and Git. Experience in relational databases and building cloud-native services is preferred.</textarea>
+              </label>
+              <div class="form-footer mt-half">
+                <button type="submit" class="button primary" id="run-optimization-btn">
+                  <span>Compare & Optimize</span>
+                  <span class="arrow">→</span>
+                </button>
+              </div>
+            </form>
+
+            <div id="optimization-results" class="mt-1" hidden>
+              <div class="content-grid">
+                <div class="surface">
+                  <span class="kicker">COMPETENCY ALIGNMENT</span>
+                  <h4 id="opt-alignment-score">Alignment: --%</h4>
+                  <p class="field-hint">Matched Skills:</p>
+                  <div id="opt-matched-skills" class="chips"></div>
+
+                  <p class="field-hint mt-1">Potential Missing Gaps:</p>
+                  <div id="opt-missing-skills" class="chips gap-chips"></div>
+                </div>
+                <div class="surface">
+                  <span class="kicker">ACTIONABLE RESUME SUGGESTIONS</span>
+                  <h4>How to Tailor Your Document</h4>
+                  <ul id="opt-suggestions-list" class="arrow-list"></ul>
+                  <div class="honesty-alert-box mt-1">
+                    ⚠️ <b>Honesty Principle:</b> Add these competencies only if you genuinely have experience with them (e.g. coursework, personal projects, or hackathons). Never fabricate credentials.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 05 / CAREER ROADMAP ================= -->
+      <section class="view" id="roadmap">
+        <div class="view-heading">
+          <span class="kicker">CAREER ROADMAP & PROFILE DIAGNOSTICS</span>
+          <h2>Evidence-Based Sprint<br><em>to Close Your Skill Gaps</em></h2>
+          <p>Run full diagnostics against live job requirements and execute a tailored 7-week sprint plan.</p>
+        </div>
+
+        <div class="surface">
+          <div class="card-header-flex">
+            <div>
+              <h3>Target Role: <span id="roadmap-role-title">Full Stack Developer</span></h3>
+              <p class="section-subtext">Click below to re-evaluate against real-time market signals.</p>
+            </div>
+            <button type="button" id="trigger-career-analysis-btn" class="button primary small">
+              <span>⚡ Run Full Analysis</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Results Container -->
+        <section id="analysis-results" class="analysis-results-section mt-1" hidden>
           <div class="result-banner surface">
             <div class="result-left">
-              <span class="kicker">ASSESSMENT DIAGNOSTIC</span>
+              <span class="kicker">ROLE READINESS BENCHMARK</span>
               <h2 id="analysis-title">Role Readiness</h2>
               <p id="readiness-label" class="readiness-tag">Application Ready</p>
               <p id="source-note" class="source-note"></p>
@@ -281,7 +769,7 @@
             </div>
           </div>
 
-          <!-- Score Breakdown Grid -->
+          <!-- Factor Scores -->
           <div class="score-row">
             <article class="metric-card">
               <span class="metric-label">Academic Index</span>
@@ -305,7 +793,7 @@
             </article>
           </div>
 
-          <!-- Strategic Advice & Skill Matrix Grid -->
+          <!-- Strategy & Skills -->
           <div class="content-grid">
             <article class="surface">
               <span class="kicker">STRATEGIC NEXT MOVE</span>
@@ -319,7 +807,7 @@
             </article>
           </div>
 
-          <!-- 7-Week Sprint Roadmap & Interview Prompts -->
+          <!-- 7-Week Sprint Roadmap & Targeted Prompts -->
           <div class="content-grid">
             <article class="surface">
               <div class="card-header-flex">
@@ -331,19 +819,19 @@
             </article>
             <article class="surface">
               <span class="kicker">TARGETED INTERVIEW PROMPTS</span>
-              <h3>Role-Specific Technical & Scenario Questions</h3>
+              <h3>Technical & Scenario Questions</h3>
               <ol id="interview-list" class="number-list"></ol>
             </article>
           </div>
 
-          <!-- Tailored Project Proposals -->
+          <!-- Portfolio Projects -->
           <article class="surface project-ideas-section" id="project-ideas-box">
             <span class="kicker">RECOMMENDED PORTFOLIO PROJECTS</span>
             <h3>Tailored Projects to Close Your Skill Gaps</h3>
             <div id="project-ideasList" class="project-ideas-grid"></div>
           </article>
 
-          <!-- Verified Company Eligibility Registry -->
+          <!-- Verified Employer Criteria Registry -->
           <article class="surface eligibility-section">
             <div class="card-header-flex">
               <div>
@@ -352,144 +840,73 @@
               </div>
               <span class="verified-source-badge">Official Criteria Only</span>
             </div>
-            <p class="section-subtext">Criteria are displayed only when an official link is verified by an authenticated administrator.</p>
+            <p class="section-subtext">Criteria verified through authoritative careers portals by administrators.</p>
             <div id="eligibility-list" class="eligibility-grid"></div>
           </article>
-
-          <!-- Recommended Live Roles for this Profile -->
-          <article class="surface recommended-jobs-section">
-            <span class="kicker">MATCHING LIVE ROLES</span>
-            <h3 id="rec-jobs-title">Real-time Openings Matching This Profile</h3>
-            <div id="recommended-job-list" class="job-list"></div>
-          </article>
         </section>
       </section>
 
-      <!-- ================= 03 / LIVE OPPORTUNITIES VIEW ================= -->
-      <section class="view" id="jobs">
+      <!-- ================= 06 / APPLICATION TRACKER ================= -->
+      <section class="view" id="applications">
         <div class="view-heading">
-          <span class="kicker">LIVE IT OPPORTUNITIES</span>
-          <h2>Search across<br><em>real-time industry signals.</em></h2>
-          <p>Adzuna-first live IT career search. Filter by role, country, location, and seniority from entry-level to senior architects.</p>
+          <span class="kicker">APPLICATION TRACKER</span>
+          <h2>Organize Your Career Pipeline<br><em>from Saved to Offer</em></h2>
+          <p>Track your applications, interview dates, and notes in one place.</p>
         </div>
 
-        <form id="job-form" class="surface search-surface">
-          <div class="search-field">
-            <label for="job-query">Job Title / Keyword</label>
-            <input id="job-query" required value="Software Developer" placeholder="e.g. Cloud Engineer, Data Analyst">
+        <div class="card-header-flex mb-1">
+          <!-- Pipeline Status Filter Tabs -->
+          <div class="category-tabs-bar" id="app-status-tabs">
+            <button type="button" class="cat-pill active" data-status="All">All Applications</button>
+            <button type="button" class="cat-pill" data-status="Saved">Saved</button>
+            <button type="button" class="cat-pill" data-status="Applied">Applied</button>
+            <button type="button" class="cat-pill" data-status="Interview">Interview</button>
+            <button type="button" class="cat-pill" data-status="Offer">Offer</button>
+            <button type="button" class="cat-pill" data-status="Rejected">Rejected</button>
           </div>
-          <div class="search-field">
-            <label for="job-location">Location (Optional)</label>
-            <input id="job-location" placeholder="e.g. Bengaluru, Remote, London">
-          </div>
-          <div class="search-field">
-            <label for="job-country">Country</label>
-            <select id="job-country">
-              <option value="in" selected>India (₹)</option>
-              <option value="us">United States ($)</option>
-              <option value="gb">United Kingdom (£)</option>
-              <option value="ca">Canada (C$)</option>
-              <option value="au">Australia (A$)</option>
-            </select>
-          </div>
-          <div class="search-field">
-            <label for="job-level">Experience Level</label>
-            <select id="job-level">
-              <option value="">All Levels</option>
-              <option value="Fresher / Entry">Fresher / Entry</option>
-              <option value="Mid-level">Mid-level</option>
-              <option value="Senior+">Senior+</option>
-            </select>
-          </div>
-          <div class="search-action">
-            <button class="button primary search-btn" type="submit">
-              <span>⌁ Search Roles</span>
-            </button>
-          </div>
-        </form>
 
-        <div class="jobs-toolbar">
-          <p id="jobs-meta" class="jobs-meta-text">Enter search criteria to retrieve live market opportunities.</p>
-          <button id="load-more" class="button ghost small" hidden>Load More Results ↓</button>
+          <button type="button" class="button primary small" id="open-add-app-modal">
+            <span>+ Add Application</span>
+          </button>
         </div>
 
-        <div id="job-list" class="job-list"></div>
-      </section>
-
-      <!-- ================= 04 / RÉSUMÉ LAB VIEW ================= -->
-      <section class="view" id="resume">
-        <div class="view-heading">
-          <span class="kicker">RÉSUMÉ ATS LAB</span>
-          <h2>Make your résumé<br><em>demonstrate the proof.</em></h2>
-          <p>Upload a text-based PDF or TXT résumé. Files are processed entirely in memory and never stored or shared.</p>
-        </div>
-
-        <div class="surface resume-card">
-          <form id="resume-form" class="resume-upload-grid">
-            <label class="dropzone" id="resume-dropzone">
-              <input id="resume-file" type="file" accept=".pdf,.txt" required>
-              <span class="dropzone-icon">📄</span>
-              <strong id="dropzone-label">Drag & drop your PDF or TXT résumé</strong>
-              <small id="dropzone-sub">or click to browse from device (Max 4 MB)</small>
-              <span id="selected-file-badge" class="file-name-badge" hidden></span>
-            </label>
-
-            <div class="resume-inputs">
-              <label>Target IT Role
-                <input id="resume-role" list="role-suggestions" required placeholder="e.g. Cloud Engineer" value="Software Developer">
+        <!-- Add Application Form Box -->
+        <div id="add-app-box" class="surface mb-1" hidden>
+          <h4>Record a New Job / Internship Application</h4>
+          <form id="add-app-form" class="mt-half">
+            <div class="form-grid four">
+              <label>Company <input id="app-company" required placeholder="e.g. Google"></label>
+              <label>Role <input id="app-role" required placeholder="e.g. SWE Intern"></label>
+              <label>Status
+                <select id="app-status">
+                  <option value="Saved">Saved</option>
+                  <option value="Applied" selected>Applied</option>
+                  <option value="Assessment">Assessment</option>
+                  <option value="Interview">Interview</option>
+                  <option value="Offer">Offer</option>
+                  <option value="Rejected">Rejected</option>
+                  <option value="Closed">Closed</option>
+                </select>
               </label>
-              <div class="resume-submit-box">
-                <button class="button primary large full-width" type="submit" id="resume-analyze-btn">
-                  <span>Analyze Résumé</span>
-                  <span class="arrow">→</span>
-                </button>
-              </div>
+              <label>Applied Date <input id="app-applied-date" type="date"></label>
+            </div>
+            <div class="form-grid three mt-half">
+              <label>Interview Date (If scheduled) <input id="app-interview-date" type="date"></label>
+              <label>Application Link <input id="app-url" placeholder="https://careers.company.com/job/123"></label>
+              <label>Notes <input id="app-notes" placeholder="e.g. Referred by mentor, completed round 1"></label>
+            </div>
+            <div class="form-footer mt-half">
+              <button type="submit" class="button primary small">Save Application</button>
+              <button type="button" id="cancel-add-app-btn" class="button ghost small">Cancel</button>
             </div>
           </form>
-          <p id="resume-error" class="message" hidden></p>
         </div>
 
-        <!-- Résumé Results View -->
-        <section id="resume-results" class="resume-results-section" hidden>
-          <div class="resume-score-card surface">
-            <div class="score-circle-wrap">
-              <svg class="score-circle-svg" viewBox="0 0 120 120">
-                <circle class="score-bg-ring" cx="60" cy="60" r="50" />
-                <circle class="score-progress-ring" id="resume-strength-ring" cx="60" cy="60" r="50" />
-              </svg>
-              <div class="score-text-overlay">
-                <strong id="resume-score">0%</strong>
-                <span>ATS SCORE</span>
-              </div>
-            </div>
-            <p id="resume-source" class="resume-benchmark-note"></p>
-          </div>
-
-          <div class="content-grid">
-            <article class="surface">
-              <span class="kicker">DETECTED TECHNICAL SKILLS</span>
-              <h3>Extracted Skills & Competencies</h3>
-              <div id="resume-skills" class="chips"></div>
-
-              <span class="kicker mt-1">MISSING ROLE KEYWORDS</span>
-              <h3>Critical Role Keywords to Add</h3>
-              <div id="resume-missing-skills" class="chips gap-chips"></div>
-            </article>
-
-            <article class="surface">
-              <span class="kicker">ATS SECTION HEALTH</span>
-              <h3>Required Structural Sections</h3>
-              <ul id="resume-sections-checklist" class="checklist-grid"></ul>
-
-              <span class="kicker mt-1">OPTIMIZATION RECOMMENDATIONS</span>
-              <h3>High-Impact Enhancements</h3>
-              <ul id="resume-suggestions" class="arrow-list"></ul>
-            </article>
-          </div>
-        </section>
+        <!-- Applications Table / Grid -->
+        <div id="applications-container" class="applications-grid"></div>
       </section>
 
-      <!-- ================= 05 / DEVELOPER VIEW ================= -->
+      <!-- ================= 07 / DEVELOPER VIEW ================= -->
       <section class="view" id="developer">
         <div class="view-heading">
           <span class="kicker">ABOUT THE PLATFORM & DEVELOPER</span>
@@ -520,41 +937,62 @@
             <h3>Modern High-Performance Stack</h3>
             <ul class="stack-list">
               <li>
-                <b>FastAPI (Python 3.11+)</b>
-                <span>Asynchronous, type-safe REST API service</span>
+                <b>FastAPI (Python 3.12+)</b>
+                <span>Asynchronous, type-safe REST API gateway</span>
               </li>
               <li>
-                <b>Multi-Provider Engine</b>
-                <span>Adzuna API primary + The Muse fallback strategy</span>
+                <b>Multi-Provider Opportunity Engine</b>
+                <span>Adzuna API + The Muse fallback + High-signal Student Programs</span>
               </li>
               <li>
-                <b>Google OAuth / OIDC</b>
-                <span>Starlette session middleware with HTTPS security</span>
+                <b>ATS Resume Center (PDF & DOCX)</b>
+                <span>In-memory extraction (PyPDF, python-docx) and ATS generation</span>
               </li>
               <li>
-                <b>SQLite / PostgreSQL Ready</b>
-                <span>Persistent assessment history & verified employer criteria</span>
+                <b>SQLite Multi-User Persistence Layer</b>
+                <span>Profiles, saved resumes, applications, and verified criteria</span>
               </li>
               <li>
-                <b>In-Memory PDF Parsing</b>
-                <span>PyPDF memory stream extraction without disk persistence</span>
+                <b>Explainable Opportunity Matching</b>
+                <span>Transparent competency alignment without fake hiring probabilities</span>
               </li>
               <li>
-                <b>Black 3D Visual System</b>
-                <span>Modern CSS variables, 3D perspective, responsive design</span>
+                <b>Black 3D Cyber Visual System</b>
+                <span>Canvas particle dynamics, 3D CSS perspective, responsive HUD cards</span>
               </li>
             </ul>
           </article>
         </div>
 
-        <article class="surface project-note">
+        <article class="surface project-note mt-1">
           <span class="kicker">DATA INTEGRITY & ETHICAL CAREER GUIDANCE</span>
           <p>
-            JobFit evaluates profiles against verifiable technical frameworks and live job provider listings. It strictly avoids automated algorithmic rejection models or unsubstantiated "placement odds." All employer requirements must be backed by official career links.
+            JobFit is an educational career intelligence and planning workspace. It does NOT make hiring decisions, guarantee job placement, or encourage dishonest resume fabrication. All employer eligibility criteria require an authoritative source link.
           </p>
         </article>
       </section>
     </main>
+  </div>
+
+  <!-- Why This Opportunity? Explainability Modal -->
+  <div id="why-match-modal" class="modal-overlay" hidden>
+    <div class="modal-card surface">
+      <div class="card-header-flex">
+        <div>
+          <span class="kicker">EXPLAINABLE OPPORTUNITY ALIGNMENT</span>
+          <h3 id="modal-opp-title">Opportunity Alignment</h3>
+          <p id="modal-opp-company" class="section-subtext"></p>
+        </div>
+        <button type="button" class="close-modal-btn" id="close-why-match-modal">&times;</button>
+      </div>
+      <div id="modal-opp-tier" class="alignment-tier-pill mt-half">High Alignment</div>
+      <div id="modal-evidence-list" class="evidence-bullets-list mt-1"></div>
+      <div class="modal-footer mt-1">
+        <p class="modal-disclaimer">
+          ⚠️ Explainable criteria based on your profile inputs. JobFit does not calculate speculative hiring odds.
+        </p>
+      </div>
+    </div>
   </div>
 
   <!-- Toast Notification Container -->
@@ -563,4 +1001,3 @@
   <script src="app.js" defer></script>
 </body>
 </html>
-

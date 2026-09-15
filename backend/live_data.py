@@ -107,6 +107,55 @@ ALIASES: dict[str, str] = {
     "dsa": "data structures",
 }
 
+SPECIAL_TITLES: dict[str, str] = {
+    "sql": "SQL",
+    "aws": "AWS",
+    "gcp": "GCP",
+    "rest api": "REST API",
+    "html": "HTML",
+    "css": "CSS",
+    "javascript": "JavaScript",
+    "typescript": "TypeScript",
+    "node.js": "Node.js",
+    "power bi": "Power BI",
+    "ci/cd": "CI/CD",
+    "servicenow": "ServiceNow",
+    "qa": "QA",
+    "ui/ux": "UI/UX",
+    "nlp": "NLP",
+    "llm": "LLM",
+    "sre": "SRE",
+    "itsm": "ITSM",
+    "abap": "ABAP",
+    "erp": "ERP",
+    "tcp/ip": "TCP/IP",
+    "soql": "SOQL",
+    "rtos": "RTOS",
+    "c++": "C++",
+    "c#": "C#",
+    "dotnet": ".NET",
+    "vue": "Vue.js",
+    "react": "React",
+    "next.js": "Next.js",
+    "mongodb": "MongoDB",
+    "postgresql": "PostgreSQL",
+    "mysql": "MySQL",
+    "redis": "Redis",
+    "docker": "Docker",
+    "kubernetes": "Kubernetes",
+    "terraform": "Terraform",
+    "jira": "Jira",
+    "figma": "Figma",
+    "selenium": "Selenium",
+    "pytorch": "PyTorch",
+    "tensorflow": "TensorFlow"
+}
+
+
+def title_skill(skill: str) -> str:
+    key = skill.strip().lower()
+    return SPECIAL_TITLES.get(key, skill.strip().title())
+
 # Precompile skill extraction regex patterns
 _SKILL_PATTERNS: list[tuple[str, re.Pattern[str]]] = []
 for canonical_skill, variants in SKILLS_MAP.items():
@@ -368,8 +417,11 @@ async def live_jobs(
     country: str = "in",
     page: int = 1,
     level: str | None = None,
+    category: str | None = None,
     user_skills: set[str] | None = None
 ) -> dict[str, Any]:
+    from backend.opportunity_engine import STUDENT_BASELINE_PROGRAMS, classify_opportunity_type, classify_workplace_type, normalize_opportunity
+
     data: dict[str, Any]
     try:
         data = await _adzuna_jobs(query, location, country, page)
@@ -378,13 +430,13 @@ async def live_jobs(
             data = await _muse_jobs(query, location, page)
             data["notice"] = "Adzuna credentials not set; showing live opportunities from The Muse."
         except Exception:
-            # Fallback to curated live stream baseline
+            # Curated student & fresher opportunity baseline
             sample_jobs = _curated_sample_jobs(query, location, country)
             data = {
-                "provider": "Live Career Intelligence Network",
+                "provider": "Student Career Intelligence Network",
                 "provider_url": "https://developer.adzuna.com/overview",
                 "live": True,
-                "notice": "Demo live stream active. Add ADZUNA_APP_ID & ADZUNA_APP_KEY in .env for unlimited Adzuna search.",
+                "notice": "Demo student opportunity stream active. Add ADZUNA_APP_ID & ADZUNA_APP_KEY in .env for unlimited Adzuna search.",
                 "updated_at": datetime.now(timezone.utc).isoformat(),
                 "jobs": sample_jobs,
                 "total_results": len(sample_jobs),
@@ -392,28 +444,72 @@ async def live_jobs(
                 "page_size": 20
             }
 
-    jobs = data.get("jobs", [])
-    if not jobs:
-        jobs = _curated_sample_jobs(query, location, country)
+    raw_jobs = data.get("jobs", [])
+    if not raw_jobs:
+        raw_jobs = _curated_sample_jobs(query, location, country)
         data["notice"] = (data.get("notice") or "") + " Showing curated live industry signals matching this role."
 
-    if level and level.strip():
-        filtered = [job for job in jobs if job.get("seniority") == level.strip()]
-        jobs = filtered if filtered else jobs
+    # Normalize all opportunities with student tags
+    normalized_jobs = []
+    for item in raw_jobs:
+        norm = normalize_opportunity(item, data.get("provider", "Live Provider"))
+        normalized_jobs.append(norm)
 
-    for job in jobs:
-        detected = set(job.get("skills", []))
+    # If student specific category or sparse results, append relevant baseline programs
+    low_query = query.lower()
+    cat_lower = (category or "").lower()
+    include_baseline = any(k in low_query for k in ("intern", "fresher", "graduate", "student")) or any(k in cat_lower for k in ("intern", "fresher", "graduate", "student")) or len(normalized_jobs) < 5
+
+    if include_baseline and page == 1:
+        existing_titles = {j["title"].lower() for j in normalized_jobs}
+        for prog in STUDENT_BASELINE_PROGRAMS:
+            if prog["title"].lower() not in existing_titles:
+                normalized_jobs.append(dict(prog))
+
+    # Apply Seniority / Experience Level filter if set
+    if level and level.strip():
+        lvl = level.strip().lower()
+        filtered = [
+            j for j in normalized_jobs
+            if lvl in j.get("experience", "").lower() or lvl in j.get("seniority", "").lower()
+        ]
+        normalized_jobs = filtered if filtered else normalized_jobs
+
+    # Apply Category filter if set
+    if category and category.strip() and category.strip().lower() not in ("all", "all categories"):
+        cat = category.strip().lower()
+        if "intern" in cat:
+            filtered = [j for j in normalized_jobs if j.get("type") == "Internships"]
+        elif "fresher" in cat:
+            filtered = [j for j in normalized_jobs if j.get("type") == "Fresher Jobs"]
+        elif "graduate" in cat:
+            filtered = [j for j in normalized_jobs if j.get("type") == "Graduate Programs"]
+        elif "student" in cat:
+            filtered = [j for j in normalized_jobs if j.get("type") == "Student Programs"]
+        elif "remote" in cat:
+            filtered = [j for j in normalized_jobs if j.get("workplace_type") == "Remote"]
+        elif "part" in cat:
+            filtered = [j for j in normalized_jobs if j.get("type") == "Part-Time"]
+        elif "job" in cat:
+            filtered = [j for j in normalized_jobs if j.get("type") in ("Jobs", "Fresher Jobs", "Graduate Programs")]
+        else:
+            filtered = [j for j in normalized_jobs if cat in j.get("type", "").lower() or cat in j.get("title", "").lower()]
+
+        normalized_jobs = filtered if filtered else normalized_jobs
+
+    # Calculate match percentage and missing skills if user_skills are provided
+    for job in normalized_jobs:
+        detected = set(normalize_skills(job.get("skills", [])))
         if user_skills and detected:
             matched_count = len(detected & user_skills)
             job["match_percentage"] = round((matched_count / len(detected)) * 100)
-            job["missing_skills"] = sorted(detected - user_skills)[:6]
+            job["missing_skills"] = [title_skill(s) for s in sorted(detected - user_skills)[:6]]
         else:
             job["match_percentage"] = None
             job["missing_skills"] = []
 
-    data["jobs"] = jobs
+    data["jobs"] = normalized_jobs
     return data
-
 
 
 async def market_signals(query: str, country: str = "in") -> dict[str, Any]:
@@ -427,4 +523,5 @@ async def market_signals(query: str, country: str = "in") -> dict[str, Any]:
         "jobs_sampled": len(data.get("jobs", [])),
         "top_skills": [{"skill": skill, "openings": count} for skill, count in counts.most_common(12)],
     }
+
 

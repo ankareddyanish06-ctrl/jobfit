@@ -1975,3 +1975,477 @@ input:focus, textarea:focus, select:focus {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Student Career Hub Additions: Categories, Subtabs, Builder, Tracker, Modal
+   ========================================================================== */
+
+/* Category Tabs Bar */
+.category-tabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cat-pill {
+  padding: 0.45rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cat-pill:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.cat-pill.active {
+  background: rgba(200, 255, 0, 0.12);
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
+/* Resume Center Sub-Tabs */
+.subtabs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  background: rgba(13, 17, 25, 0.6);
+  padding: 0.4rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  margin-bottom: 1.5rem;
+}
+
+.subtab-btn {
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.subtab-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.subtab-btn.active {
+  background: var(--surface);
+  border-color: rgba(200, 255, 0, 0.3);
+  color: var(--acid);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.resume-tab-pane {
+  display: none;
+}
+
+.resume-tab-pane.active {
+  display: block;
+}
+
+/* My Resumes Grid & Cards */
+.my-resumes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.my-resume-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+}
+
+.my-resume-card:hover {
+  border-color: rgba(200, 255, 0, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.my-resume-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: rgba(200, 255, 0, 0.1);
+  border: 1px solid var(--acid);
+  color: var(--acid);
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.my-resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--line);
+}
+
+/* Resume Builder */
+.builder-surface {
+  padding: 1.8rem;
+}
+
+.builder-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.template-picker select {
+  padding: 0.45rem 0.8rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--line);
+  color: var(--acid);
+  font-family: inherit;
+  font-size: 0.85rem;
+  border-radius: var(--radius-sm);
+}
+
+.builder-sec {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.builder-sec h4 {
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+  margin: 0 0 0.8rem;
+}
+
+.dynamic-rows-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 0.6rem;
+}
+
+.dynamic-row-card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem;
+  position: relative;
+}
+
+.dynamic-row-remove-btn {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  background: rgba(255, 77, 109, 0.15);
+  border: 1px solid rgba(255, 77, 109, 0.4);
+  color: #ff9fb2;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.dynamic-row-remove-btn:hover {
+  background: rgba(255, 77, 109, 0.3);
+}
+
+.builder-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+/* In-Memory Privacy Alert */
+.in-memory-note {
+  background: rgba(0, 240, 255, 0.06);
+  border-left: 3px solid var(--accent-cyan);
+  padding: 0.8rem 1rem;
+  font-size: 0.8rem;
+  color: #a0d8ef;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: 0.8rem 0;
+  line-height: 1.45;
+}
+
+/* Honesty Alert Box */
+.honesty-alert-box {
+  background: rgba(200, 255, 0, 0.08);
+  border: 1px solid rgba(200, 255, 0, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.1rem;
+  color: #e2f78c;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+/* Opportunities Card Badges */
+.job-type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: var(--accent-cyan);
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+}
+
+.job-workplace-badge {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  border-radius: var(--radius-full);
+}
+
+.job-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.job-card-btn {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+}
+
+.job-card-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.job-card-btn.why-btn {
+  border-color: rgba(200, 255, 0, 0.3);
+  color: var(--acid);
+  background: rgba(200, 255, 0, 0.06);
+}
+
+.job-card-btn.why-btn:hover {
+  background: rgba(200, 255, 0, 0.15);
+}
+
+.job-card-btn.saved-active {
+  background: rgba(200, 255, 0, 0.18);
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
+/* Application Tracker Grid & Cards */
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.2rem;
+}
+
+.application-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s ease;
+}
+
+.application-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.app-status-badge {
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.app-status-badge.Saved {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  border: 1px solid var(--line);
+}
+
+.app-status-badge.Applied {
+  background: rgba(0, 240, 255, 0.12);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+}
+
+.app-status-badge.Assessment, .app-status-badge.Interview {
+  background: rgba(200, 255, 0, 0.12);
+  color: var(--acid);
+  border: 1px solid rgba(200, 255, 0, 0.4);
+}
+
+.app-status-badge.Offer {
+  background: rgba(72, 229, 142, 0.15);
+  color: #48e58e;
+  border: 1px solid #48e58e;
+}
+
+.app-status-badge.Rejected, .app-status-badge.Closed {
+  background: rgba(255, 77, 109, 0.12);
+  color: #ff9fb2;
+  border: 1px solid rgba(255, 77, 109, 0.3);
+}
+
+.app-status-select {
+  padding: 0.3rem 0.6rem;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--line);
+  color: var(--text-main);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-family: inherit;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 580px;
+  max-height: 85vh;
+  overflow-y: auto;
+  border: 1px solid rgba(200, 255, 0, 0.3);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 40px rgba(200, 255, 0, 0.1);
+  padding: 1.8rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(20, 28, 42, 0.98) 0%, rgba(10, 14, 22, 0.98) 100%);
+}
+
+.close-modal-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.6rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-modal-btn:hover {
+  color: var(--text-main);
+}
+
+.alignment-tier-pill {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  background: rgba(200, 255, 0, 0.12);
+  border: 1px solid var(--acid);
+  color: var(--acid);
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.evidence-bullets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.evidence-bullet {
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.evidence-bullet.positive {
+  background: rgba(72, 229, 142, 0.08);
+  border-left: 3px solid #48e58e;
+  color: #92f5c0;
+}
+
+.evidence-bullet.gap {
+  background: rgba(255, 180, 0, 0.08);
+  border-left: 3px solid #ffb400;
+  color: #ffd875;
+}
+
+.evidence-bullet.neutral {
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid var(--text-muted);
+  color: var(--text-muted);
+}
+
+.modal-disclaimer {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+/* Action banner on home */
+.action-banner {
+  background: linear-gradient(135deg, rgba(200, 255, 0, 0.06) 0%, rgba(0, 240, 255, 0.04) 100%);
+  border: 1px solid rgba(200, 255, 0, 0.2);
+}
+
+.banner-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--acid);
+  letter-spacing: 0.06em;
+}
+
+/* Utility classes */
+.mt-1 { margin-top: 1rem; }
+.mt-half { margin-top: 0.5rem; }
+.mb-1 { margin-bottom: 1rem; }
+.form-grid.two { grid-template-columns: repeat(2, 1fr); }
+.full-width { width: 100%; }
+

@@ -1,4 +1,4 @@
-"""SQLite persistence for JobFit analyses and verified company criteria."""
+"""SQLite persistence for JobFit analyses, verified company criteria, profiles, resumes, and applications."""
 from __future__ import annotations
 
 import json
@@ -14,11 +14,13 @@ DB_PATH = Path(_db_env) if _db_env else DEFAULT_DB_PATH
 
 
 def _connection() -> sqlite3.Connection:
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(DB_PATH, timeout=15)
+    db_env = os.getenv("DATABASE_PATH", "").strip()
+    db_path = Path(db_env) if db_env else DEFAULT_DB_PATH
+    if str(db_path) != ":memory:":
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+    con = sqlite3.connect(str(db_path), timeout=15)
     con.row_factory = sqlite3.Row
     return con
-
 
 
 SEED_REQUIREMENTS = [
@@ -164,6 +166,7 @@ def init_db() -> None:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 timestamp TEXT NOT NULL,
                 student_name TEXT NOT NULL,
+                user_email TEXT,
                 target_role TEXT NOT NULL,
                 readiness_score REAL NOT NULL,
                 profile_json TEXT NOT NULL,
@@ -185,8 +188,71 @@ def init_db() -> None:
                 UNIQUE(company, target_role, graduation_year)
             )
         """)
+        # Student Profile Table
+        con.execute("""
+            CREATE TABLE IF NOT EXISTS profiles (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT UNIQUE NOT NULL,
+                profile_json TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        # Resumes Table (Multiple versions per user)
+        con.execute("""
+            CREATE TABLE IF NOT EXISTS resumes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT NOT NULL,
+                title TEXT NOT NULL,
+                target_role TEXT NOT NULL,
+                template_id TEXT NOT NULL DEFAULT 'classic',
+                resume_json TEXT NOT NULL,
+                ats_score INTEGER DEFAULT 0,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+        # Saved Opportunities Bookmarks
+        con.execute("""
+            CREATE TABLE IF NOT EXISTS saved_opportunities (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT NOT NULL,
+                opportunity_id TEXT NOT NULL,
+                opportunity_json TEXT NOT NULL,
+                saved_at TEXT NOT NULL,
+                UNIQUE(user_email, opportunity_id)
+            )
+        """)
+        # Application Tracker Table
+        con.execute("""
+            CREATE TABLE IF NOT EXISTS applications (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT NOT NULL,
+                company TEXT NOT NULL,
+                role TEXT NOT NULL,
+                opportunity_id TEXT,
+                status TEXT NOT NULL DEFAULT 'Saved',
+                applied_date TEXT,
+                interview_date TEXT,
+                notes TEXT,
+                url TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            )
+        """)
+
+        # Migration for existing databases
+        cursor = con.execute("PRAGMA table_info(career_analyses)")
+        existing_cols = {row["name"] for row in cursor.fetchall()}
+        if "user_email" not in existing_cols:
+            con.execute("ALTER TABLE career_analyses ADD COLUMN user_email TEXT")
+
         con.execute("CREATE INDEX IF NOT EXISTS idx_career_analyses_timestamp ON career_analyses(timestamp DESC)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_career_analyses_user ON career_analyses(user_email)")
         con.execute("CREATE INDEX IF NOT EXISTS idx_company_requirements_role ON company_requirements(target_role)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_profiles_user ON profiles(user_email)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_resumes_user ON resumes(user_email)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_saved_opps_user ON saved_opportunities(user_email)")
+        con.execute("CREATE INDEX IF NOT EXISTS idx_applications_user ON applications(user_email)")
 
         count = con.execute("SELECT COUNT(*) FROM company_requirements").fetchone()[0]
         if count == 0:
@@ -212,16 +278,271 @@ def init_db() -> None:
                 )
 
 
-def save_analysis(profile: dict[str, Any], analysis: dict[str, Any]) -> int:
+# ============================================================================
+# Profile CRUD
+# ============================================================================
+
+def get_user_profile(user_email: str) -> dict[str, Any] | None:
+    with _connection() as con:
+        row = con.execute("SELECT profile_json, updated_at FROM profiles WHERE user_email = ?", (user_email.lower(),)).fetchone()
+        if not row:
+            return None
+        data = json.loads(row["profile_json"])
+        data["updated_at"] = row["updated_at"]
+        return data
+
+
+def upsert_user_profile(user_email: str, profile: dict[str, Any]) -> dict[str, Any]:
+    now = datetime.now(timezone.utc).isoformat()
+    cleaned_email = user_email.lower()
+    profile["email"] = cleaned_email
+    with _connection() as con:
+        con.execute(
+            """
+            INSERT INTO profiles (user_email, profile_json, updated_at)
+            VALUES (?, ?, ?)
+            ON CONFLICT(user_email) DO UPDATE SET
+                profile_json = excluded.profile_json,
+                updated_at = excluded.updated_at
+            """,
+            (cleaned_email, json.dumps(profile), now)
+        )
+    profile["updated_at"] = now
+    return profile
+
+
+# ============================================================================
+# Resumes CRUD
+# ============================================================================
+
+def get_user_resumes(user_email: str) -> list[dict[str, Any]]:
+    with _connection() as con:
+        rows = con.execute(
+            """
+            SELECT id, user_email, title, target_role, template_id, resume_json, ats_score, created_at, updated_at
+            FROM resumes
+            WHERE user_email = ?
+            ORDER BY updated_at DESC
+            """,
+            (user_email.lower(),)
+        ).fetchall()
+        result = []
+        for r in rows:
+            item = dict(r)
+            item["content"] = json.loads(r["resume_json"])
+            result.append(item)
+        return result
+
+
+def get_user_resume_by_id(user_email: str, resume_id: int) -> dict[str, Any] | None:
+    with _connection() as con:
+        row = con.execute(
+            """
+            SELECT id, user_email, title, target_role, template_id, resume_json, ats_score, created_at, updated_at
+            FROM resumes
+            WHERE id = ? AND user_email = ?
+            """,
+            (resume_id, user_email.lower())
+        ).fetchone()
+        if not row:
+            return None
+        item = dict(row)
+        item["content"] = json.loads(row["resume_json"])
+        return item
+
+
+def save_user_resume(user_email: str, resume_data: dict[str, Any]) -> int:
+    now = datetime.now(timezone.utc).isoformat()
+    cleaned_email = user_email.lower()
+    resume_id = resume_data.get("id")
+    title = resume_data.get("title") or f"{resume_data.get('target_role', 'General')} Resume"
+    target_role = resume_data.get("target_role", "Software Developer")
+    template_id = resume_data.get("template_id", "classic")
+    ats_score = int(resume_data.get("ats_score", 0))
+    content_json = json.dumps(resume_data.get("content", {}))
+
+    with _connection() as con:
+        if resume_id:
+            # Update existing
+            con.execute(
+                """
+                UPDATE resumes
+                SET title = ?, target_role = ?, template_id = ?, resume_json = ?, ats_score = ?, updated_at = ?
+                WHERE id = ? AND user_email = ?
+                """,
+                (title, target_role, template_id, content_json, ats_score, now, resume_id, cleaned_email)
+            )
+            return int(resume_id)
+        else:
+            cur = con.execute(
+                """
+                INSERT INTO resumes (user_email, title, target_role, template_id, resume_json, ats_score, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (cleaned_email, title, target_role, template_id, content_json, ats_score, now, now)
+            )
+            return int(cur.lastrowid)
+
+
+def delete_user_resume(user_email: str, resume_id: int) -> bool:
+    with _connection() as con:
+        cur = con.execute("DELETE FROM resumes WHERE id = ? AND user_email = ?", (resume_id, user_email.lower()))
+        return cur.rowcount > 0
+
+
+# ============================================================================
+# Saved Opportunities Bookmarks CRUD
+# ============================================================================
+
+def get_saved_opportunities(user_email: str) -> list[dict[str, Any]]:
+    with _connection() as con:
+        rows = con.execute(
+            """
+            SELECT id, opportunity_id, opportunity_json, saved_at
+            FROM saved_opportunities
+            WHERE user_email = ?
+            ORDER BY id DESC
+            """,
+            (user_email.lower(),)
+        ).fetchall()
+        result = []
+        for r in rows:
+            opp = json.loads(r["opportunity_json"])
+            opp["saved_id"] = r["id"]
+            opp["saved_at"] = r["saved_at"]
+            result.append(opp)
+        return result
+
+
+def save_opportunity_bookmark(user_email: str, opp_data: dict[str, Any]) -> int:
+    now = datetime.now(timezone.utc).isoformat()
+    cleaned_email = user_email.lower()
+    opp_id = str(opp_data.get("id"))
     with _connection() as con:
         cur = con.execute(
             """
-            INSERT INTO career_analyses (timestamp, student_name, target_role, readiness_score, profile_json, analysis_json)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO saved_opportunities (user_email, opportunity_id, opportunity_json, saved_at)
+            VALUES (?, ?, ?, ?)
+            """,
+            (cleaned_email, opp_id, json.dumps(opp_data), now)
+        )
+        return int(cur.lastrowid)
+
+
+def delete_saved_opportunity(user_email: str, opportunity_id: str) -> bool:
+    with _connection() as con:
+        cur = con.execute(
+            "DELETE FROM saved_opportunities WHERE user_email = ? AND (opportunity_id = ? OR id = ?)",
+            (user_email.lower(), str(opportunity_id), int(opportunity_id) if str(opportunity_id).isdigit() else -1)
+        )
+        return cur.rowcount > 0
+
+
+# ============================================================================
+# Application Tracker CRUD
+# ============================================================================
+
+def get_user_applications(user_email: str) -> list[dict[str, Any]]:
+    with _connection() as con:
+        rows = con.execute(
+            """
+            SELECT id, company, role, opportunity_id, status, applied_date, interview_date, notes, url, created_at, updated_at
+            FROM applications
+            WHERE user_email = ?
+            ORDER BY updated_at DESC
+            """,
+            (user_email.lower(),)
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+
+def add_user_application(user_email: str, app_data: dict[str, Any]) -> int:
+    now = datetime.now(timezone.utc).isoformat()
+    cleaned_email = user_email.lower()
+    with _connection() as con:
+        cur = con.execute(
+            """
+            INSERT INTO applications
+            (user_email, company, role, opportunity_id, status, applied_date, interview_date, notes, url, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                cleaned_email,
+                app_data["company"],
+                app_data["role"],
+                app_data.get("opportunity_id"),
+                app_data.get("status", "Saved"),
+                app_data.get("applied_date", now[:10]),
+                app_data.get("interview_date"),
+                app_data.get("notes", ""),
+                app_data.get("url", ""),
+                now,
+                now,
+            )
+        )
+        return int(cur.lastrowid)
+
+
+def update_application_status(
+    user_email: str,
+    app_id: int,
+    status: str,
+    notes: str | None = None,
+    interview_date: str | None = None
+) -> bool:
+    now = datetime.now(timezone.utc).isoformat()
+    with _connection() as con:
+        if notes is not None and interview_date is not None:
+            cur = con.execute(
+                """
+                UPDATE applications
+                SET status = ?, notes = ?, interview_date = ?, updated_at = ?
+                WHERE id = ? AND user_email = ?
+                """,
+                (status, notes, interview_date, now, app_id, user_email.lower())
+            )
+        elif notes is not None:
+            cur = con.execute(
+                """
+                UPDATE applications
+                SET status = ?, notes = ?, updated_at = ?
+                WHERE id = ? AND user_email = ?
+                """,
+                (status, notes, now, app_id, user_email.lower())
+            )
+        else:
+            cur = con.execute(
+                """
+                UPDATE applications
+                SET status = ?, updated_at = ?
+                WHERE id = ? AND user_email = ?
+                """,
+                (status, now, app_id, user_email.lower())
+            )
+        return cur.rowcount > 0
+
+
+def delete_user_application(user_email: str, app_id: int) -> bool:
+    with _connection() as con:
+        cur = con.execute("DELETE FROM applications WHERE id = ? AND user_email = ?", (app_id, user_email.lower()))
+        return cur.rowcount > 0
+
+
+# ============================================================================
+# Career Analyses & Company Requirements (Preserved)
+# ============================================================================
+
+def save_analysis(profile: dict[str, Any], analysis: dict[str, Any], user_email: str | None = None) -> int:
+    with _connection() as con:
+        cur = con.execute(
+            """
+            INSERT INTO career_analyses (timestamp, student_name, user_email, target_role, readiness_score, profile_json, analysis_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 datetime.now(timezone.utc).isoformat(),
                 profile["name"],
+                (user_email or "").lower(),
                 profile["target_role"],
                 analysis["readiness_score"],
                 json.dumps(profile),
@@ -231,17 +552,29 @@ def save_analysis(profile: dict[str, Any], analysis: dict[str, Any]) -> int:
         return int(cur.lastrowid)
 
 
-def get_analysis_history(limit: int = 8) -> list[dict[str, Any]]:
+def get_analysis_history(limit: int = 8, user_email: str | None = None) -> list[dict[str, Any]]:
     with _connection() as con:
-        rows = con.execute(
-            """
-            SELECT id, timestamp, student_name, target_role, readiness_score, analysis_json
-            FROM career_analyses
-            ORDER BY id DESC
-            LIMIT ?
-            """,
-            (limit,),
-        ).fetchall()
+        if user_email:
+            rows = con.execute(
+                """
+                SELECT id, timestamp, student_name, target_role, readiness_score, analysis_json
+                FROM career_analyses
+                WHERE user_email = ? OR user_email = '' OR user_email IS NULL
+                ORDER BY id DESC
+                LIMIT ?
+                """,
+                (user_email.lower(), limit),
+            ).fetchall()
+        else:
+            rows = con.execute(
+                """
+                SELECT id, timestamp, student_name, target_role, readiness_score, analysis_json
+                FROM career_analyses
+                ORDER BY id DESC
+                LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
     return [{**dict(row), "analysis": json.loads(row["analysis_json"])} for row in rows]
 
 
@@ -309,7 +642,6 @@ def get_requirements(role: str | None = None) -> list[dict[str, Any]]:
                 if canonical in db_role or db_role in canonical or any(w in db_role for w in canonical.split() if len(w) > 3):
                     matching_rows.append(row)
             if not matching_rows:
-                # If no direct match, return software developer/general baseline if available
                 matching_rows = [r for r in rows if "software" in r["target_role"].lower()][:4]
             rows_to_return = matching_rows or rows[:6]
         else:
@@ -329,4 +661,3 @@ def get_requirements(role: str | None = None) -> list[dict[str, Any]]:
         }
         for row in rows_to_return
     ]
-
