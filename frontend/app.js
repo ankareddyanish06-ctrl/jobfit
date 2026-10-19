@@ -599,34 +599,66 @@ async function toggleSaveOpportunity(opp, btn) {
 }
 
 // "Why This Match?" Explainability Modal
+function evidenceBullet(type, message) {
+  const bullet = document.createElement("div");
+  bullet.className = `evidence-bullet ${type}`;
+  bullet.textContent = message;
+  return bullet;
+}
+
+function renderWhyMatchEvidence(evidenceBox, evidence) {
+  evidenceBox.replaceChildren();
+  evidence.forEach((item) => evidenceBox.appendChild(evidenceBullet(item.type || "neutral", item.message)));
+}
+
 async function openWhyMatchModal(opp) {
   const modal = $("#why-match-modal");
-  $("#modal-opp-title").textContent = opp.title;
-  $("#modal-opp-company").textContent = `${opp.company} · ${opp.location}`;
+  const title = opp?.title || "Opportunity Alignment";
+  const company = opp?.company || "Verified opportunity";
+  const location = opp?.location || "Location not specified";
+  const skills = Array.isArray(opp?.skills) ? opp.skills.filter(Boolean) : [];
+  const profileSkills = Array.isArray(currentProfile?.skills)
+    ? currentProfile.skills
+    : (Array.isArray(currentProfile?.technical_skills) ? currentProfile.technical_skills : []);
+  const profileSkillSet = new Set(profileSkills.map((skill) => String(skill).trim().toLowerCase()));
+  const matched = skills.filter((skill) => profileSkillSet.has(String(skill).trim().toLowerCase()));
+  const unmatched = skills.filter((skill) => !profileSkillSet.has(String(skill).trim().toLowerCase()));
+
+  $("#modal-opp-title").textContent = title;
+  $("#modal-opp-company").textContent = `${company} · ${location}`;
+  $("#modal-opp-tier").textContent = "Checking alignment…";
 
   const evidenceBox = $("#modal-evidence-list");
-  evidenceBox.innerHTML = "<p style='color:var(--text-muted);'>Calculating explainable alignment…</p>";
+  const initialEvidence = [];
+  if (matched.length) {
+    initialEvidence.push({ type: "positive", message: `Profile evidence: ${matched.slice(0, 4).join(", ")} appears in both your profile and this opportunity.` });
+  }
+  if (unmatched.length) {
+    initialEvidence.push({ type: "gap", message: `Preparation areas: ${unmatched.slice(0, 3).join(", ")}. Add them only after gaining genuine experience.` });
+  }
+  if (!initialEvidence.length) {
+    initialEvidence.push({ type: "neutral", message: "This listing does not expose enough structured skill data for an instant comparison. JobFit is requesting a detailed explanation now." });
+  }
+  renderWhyMatchEvidence(evidenceBox, initialEvidence);
   modal.hidden = false;
 
   try {
     const res = await apiRequest("/opportunities/why-match", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ opportunity: opp, profile: currentProfile }),
+      body: JSON.stringify({ opportunity: opp || {}, profile: currentProfile || {} }),
     });
-    const d = res.data;
-
-    $("#modal-opp-tier").textContent = d.alignment_tier;
-
-    evidenceBox.replaceChildren();
-    (d.evidence || []).forEach((item) => {
-      const bullet = document.createElement("div");
-      bullet.className = `evidence-bullet ${item.type}`;
-      bullet.textContent = item.message;
-      evidenceBox.appendChild(bullet);
-    });
+    const d = res?.data || {};
+    $("#modal-opp-tier").textContent = d.alignment_tier || "Opportunity alignment";
+    const detailedEvidence = Array.isArray(d.evidence) ? d.evidence.filter((item) => item?.message) : [];
+    if (detailedEvidence.length) {
+      renderWhyMatchEvidence(evidenceBox, detailedEvidence);
+    } else {
+      evidenceBox.appendChild(evidenceBullet("neutral", "The detailed service returned no additional criteria. Review the official listing before applying."));
+    }
   } catch (err) {
-    evidenceBox.innerHTML = `<p class="message">Could not evaluate match: ${escapeHtml(err.message)}</p>`;
+    $("#modal-opp-tier").textContent = "Opportunity details available";
+    evidenceBox.appendChild(evidenceBullet("neutral", `Detailed alignment could not be loaded: ${err.message}. The visible criteria above are based only on listing data.`));
   }
 }
 
@@ -634,8 +666,7 @@ $("#close-why-match-modal").addEventListener("click", () => {
   $("#why-match-modal").hidden = true;
 });
 
-// ============================================================================
-// 04 / Resume Center Controller
+// ============================================================================// 04 / Resume Center Controller
 // ============================================================================
 
 // Subtab switching
